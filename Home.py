@@ -84,7 +84,6 @@ def generate_answer():
     st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 
-
 # Define a variable to store the conversation history
 conversation_history = []
 
@@ -97,6 +96,8 @@ def save_conversation_history():
 
 # Add a text input and a save button
 input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+
 if st.button("Save Conversation"):
     # Call the function to save the conversation history and create a clickable button widget on the sidebar
     save_conversation_history()

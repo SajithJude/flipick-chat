@@ -12,6 +12,8 @@ favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
 st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
 
+
+
 hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden;}
@@ -22,13 +24,13 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 footer="""<style>
 a:link , a:visited{
 color: blue;
-background-color: transparent;
+background-color: white;
 text-decoration: underline;
 }
 
 a:hover,  a:active {
 color: red;
-background-color: transparent;
+background-color: white;
 text-decoration: underline;
 }
 

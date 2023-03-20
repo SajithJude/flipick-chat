@@ -10,7 +10,6 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 def generate_answer():
-    tokenizer, model = get_models()
     user_message = st.session_state.input_text
     message_bot = index.query(user_message)
     st.session_state.history.append({"message": user_message, "is_user": True})

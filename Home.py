@@ -39,6 +39,8 @@ color: grey;
 text-align: justify;
 bottom: 0;
 position: fixed;
+background-color: white;
+
 font-size: 8px;
 }
 

@@ -6,18 +6,16 @@ from streamlit_chat import message as st_message
 
 openai.api_key = os.getenv("API_KEY")
 
-@st.cache
-def load():
+try:
+    index = GPTSimpleVectorIndex.load_from_disk('index.json')
+except FileNotFoundError:
     # Loading from a directory
     documents = SimpleDirectoryReader('content').load_data()
     index = GPTSimpleVectorIndex(documents)
     index.save_to_disk('index.json')
-    # load from disk
-    return index
 
-load()
-index = GPTSimpleVectorIndex.load_from_disk('index.json')
 
+    
 if "history" not in st.session_state:
     st.session_state.history = []
 

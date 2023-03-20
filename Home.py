@@ -84,7 +84,7 @@ def generate_answer():
     st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 
-st.sidebar.image("logo_flipick_colored.png")
+# st.sidebar.image("logo_flipick_colored.png")
 
 # Define a variable to store the conversation history
 # conversation_history = []
@@ -102,6 +102,7 @@ st.sidebar.image("logo_flipick_colored.png")
 #             st.button(f"Conversation {i+1}")
 # Add a text input and a save button
 st.image("Flipick_Logo-1.jpg")
+
 input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
 st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
 

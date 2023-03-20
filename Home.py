@@ -14,12 +14,12 @@ st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
 
 
-hide_menu_style = """
-        <style>
-        #MainMenu {visibility: hidden;}
-        </style>
-        """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
+# hide_menu_style = """
+#         <style>
+#         #MainMenu {visibility: hidden;}
+#         </style>
+#         """
+# st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 footer="""<style>
 a:link , a:visited{

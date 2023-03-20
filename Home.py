@@ -30,7 +30,8 @@ text-align: center;
 }
 </style>
 <div class="footer">
-<p>Developed with ❤ by <a style='display: block; text-align: center;' href="https://www.heflin.dev/" target="_blank">Heflin Stephen Raj S</a></p>
+<p>© Copyright 2023 Flipick</p>
+<p> Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book "Treasury Management" published by IIBF. All content rights vest with IIBF </p>
 </div>
 """
 

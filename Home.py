@@ -24,13 +24,13 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 footer="""<style>
 a:link , a:visited{
 color: blue;
-background-color: white;
+background-color: transparent;
 text-decoration: underline;
 }
 
 a:hover,  a:active {
 color: red;
-background-color: white;
+background-color: transparent;
 text-decoration: underline;
 }
 

@@ -4,6 +4,12 @@ from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader,Pr
 import os 
 from streamlit_chat import message as st_message
 
+
+favicon = "logo_flipick_colored.png"
+
+st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
+
+
 openai.api_key = os.getenv("API_KEY")
 
 try:
@@ -15,7 +21,7 @@ except FileNotFoundError:
     index.save_to_disk('index.json')
 
 
-    
+
 if "history" not in st.session_state:
     st.session_state.history = []
 

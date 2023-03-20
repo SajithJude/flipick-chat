@@ -92,7 +92,7 @@ def save_conversation_history():
     # Append the conversation history to the variable
     conversation_history.append(st.session_state.history)
     # Clear the sidebar
-    st.sidebar.clear()
+    # st.sidebar.clear()
     # Add a block to the sidebar to contain multiple widgets
     with st.sidebar:
         # Add a clickable button widget for each saved conversation

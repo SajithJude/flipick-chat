@@ -101,7 +101,10 @@ def generate_answer():
 #         for i in range(len(conversation_history)):
 #             st.button(f"Conversation {i+1}")
 # Add a text input and a save button
-st.image("Flipick_Logo-1.jpg", width=300)
+
+col1, col2 = st.columns([1, 3])
+
+col2.image("Flipick_Logo-1.jpg", width=300)
 st.write("")
 st.write("")
 

@@ -84,27 +84,29 @@ def generate_answer():
     st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 
-# Define a variable to store the conversation history
-conversation_history = []
+st.sidebar.image("logo_flipick_colored.png", use_column_width=True)
 
-# Define a function to save the conversation history and create a clickable button widget on the sidebar
-def save_conversation_history():
-    # Append the conversation history to the variable
-    conversation_history.append(st.session_state.history)
-    # Clear the sidebar
-    st.sidebar.empty()
-    # Add a block to the sidebar to contain multiple widgets
-    with st.sidebar:
-        # Add a clickable button widget for each saved conversation
-        for i in range(len(conversation_history)):
-            st.button(f"Conversation {i+1}")
+# Define a variable to store the conversation history
+# conversation_history = []
+
+# # Define a function to save the conversation history and create a clickable button widget on the sidebar
+# def save_conversation_history():
+#     # Append the conversation history to the variable
+#     conversation_history.append(st.session_state.history)
+#     # Clear the sidebar
+#     st.sidebar.empty()
+#     # Add a block to the sidebar to contain multiple widgets
+#     with st.sidebar:
+#         # Add a clickable button widget for each saved conversation
+#         for i in range(len(conversation_history)):
+#             st.button(f"Conversation {i+1}")
 # Add a text input and a save button
 input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
 st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
 
-if st.button("Save Conversation"):
-    # Call the function to save the conversation history and create a clickable button widget on the sidebar
-    save_conversation_history()
+# if st.button("Save Conversation"):
+#     # Call the function to save the conversation history and create a clickable button widget on the sidebar
+#     save_conversation_history()
 
 # Display the conversation history
 for chat in st.session_state.history:

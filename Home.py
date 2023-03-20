@@ -30,7 +30,7 @@ def generate_answer():
 
 
 
-st.text_input("Talk to the bot", key="input_text", on_change=generate_answer)
+st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
 
 for chat in st.session_state.history:
     st_message(**chat) 

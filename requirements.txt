@@ -2,3 +2,4 @@ streamlit
 llama-index
 openai
 PyPDF2
+streamlit-chat

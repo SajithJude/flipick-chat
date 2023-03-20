@@ -1,5 +1,3 @@
 streamlit
-streamlit-chat
 llama-index
 openai
-PyPDF2

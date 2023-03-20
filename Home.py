@@ -4,6 +4,14 @@ from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader,Pr
 import os 
 from streamlit_chat import message as st_message
 
+
+
+
+favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
+
+st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
+
+
 hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden;}
@@ -51,10 +59,6 @@ text-align: center;
 """
 
 
-
-favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
-
-st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
 
 openai.api_key = os.getenv("API_KEY")

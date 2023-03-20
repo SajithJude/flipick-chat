@@ -22,6 +22,9 @@ text-decoration: underline;
 .diclaim {
 color: grey;
 text-align: justify;
+bottom: 0;
+position: fixed;
+font-size: 8px;
 }
 
 .footer {

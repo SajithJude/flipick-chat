@@ -11,7 +11,7 @@ index.save_to_disk('index.json')
 # load from disk
 index = GPTSimpleVectorIndex.load_from_disk('index.json')
 
-st.write(index)
+# st.write(index)
 inpt = st.text_area("Ask something")
 
 if inpt:

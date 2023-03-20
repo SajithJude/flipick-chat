@@ -85,13 +85,22 @@ def generate_answer():
 
 
 
+# Define a variable to store the conversation history
+conversation_history = []
 
-st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
-st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+# Define a function to save the conversation history and create a clickable button widget on the sidebar
+def save_conversation_history():
+    # Append the conversation history to the variable
+    conversation_history.append(st.session_state.history)
+    # Add a clickable button widget on the sidebar to load the saved conversation history
+    st.sidebar.button(f"Conversation {len(conversation_history)}")
 
+# Add a text input and a save button
+input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+if st.button("Save Conversation"):
+    # Call the function to save the conversation history and create a clickable button widget on the sidebar
+    save_conversation_history()
+
+# Display the conversation history
 for chat in st.session_state.history:
-    st_message(**chat) 
-
-
-
-st.markdown(footer,unsafe_allow_html=True)
+    st_message(**chat)

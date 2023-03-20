@@ -84,7 +84,7 @@ def generate_answer():
     st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 
-st.sidebar.image("logo_flipick_colored.png", use_column_width=True)
+st.sidebar.image("logo_flipick_colored.png")
 
 # Define a variable to store the conversation history
 # conversation_history = []

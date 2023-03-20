@@ -91,9 +91,13 @@ conversation_history = []
 def save_conversation_history():
     # Append the conversation history to the variable
     conversation_history.append(st.session_state.history)
-    # Add a clickable button widget on the sidebar to load the saved conversation history
-    st.sidebar.button(f"Conversation {len(conversation_history)}")
-
+    # Clear the sidebar
+    st.sidebar.clear()
+    # Add a block to the sidebar to contain multiple widgets
+    with st.sidebar:
+        # Add a clickable button widget for each saved conversation
+        for i in range(len(conversation_history)):
+            st.button(f"Conversation {i+1}")
 # Add a text input and a save button
 input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
 st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")

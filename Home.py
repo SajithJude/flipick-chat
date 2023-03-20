@@ -6,6 +6,18 @@ from streamlit_chat import message as st_message
 
 openai.api_key = os.getenv("API_KEY")
 
+@st.cache
+def load():
+    # Loading from a directory
+    documents = SimpleDirectoryReader('content').load_data()
+    index = GPTSimpleVectorIndex(documents)
+    index.save_to_disk('index.json')
+    # load from disk
+    index = GPTSimpleVectorIndex.load_from_disk('index.json')
+    return index
+
+load()
+
 if "history" not in st.session_state:
     st.session_state.history = []
 
@@ -17,14 +29,6 @@ def generate_answer():
 
 
 
-
-
-# Loading from a directory
-documents = SimpleDirectoryReader('content').load_data()
-index = GPTSimpleVectorIndex(documents)
-index.save_to_disk('index.json')
-# load from disk
-index = GPTSimpleVectorIndex.load_from_disk('index.json')
 
 st.text_input("Talk to the bot", key="input_text", on_change=generate_answer)
 

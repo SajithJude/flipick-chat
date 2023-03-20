@@ -102,7 +102,7 @@ def generate_answer():
 #             st.button(f"Conversation {i+1}")
 # Add a text input and a save button
 
-col1, col2 = st.columns([1, 3])
+col1, col2 = st.columns([3, 1])
 
 col2.image("Flipick_Logo-1.jpg", width=300)
 st.write("")

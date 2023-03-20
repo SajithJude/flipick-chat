@@ -11,5 +11,7 @@ index = GPTSimpleVectorIndex(documents)
 
 st.write(index)
 inpt = st.text_area("Ask something")
-response = index.query(inpt)
-st.write(response)
+
+if inpt:
+    response = index.query(inpt)
+    st.write(response)

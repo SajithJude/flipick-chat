@@ -25,7 +25,7 @@ def generate_answer():
     user_message = st.session_state.input_text
     message_bot = index.query(str(user_message))
     st.session_state.history.append({"message": user_message, "is_user": True})
-    st.session_state.history.append({"message": message_bot, "is_user": False})
+    st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 
 

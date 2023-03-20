@@ -57,9 +57,6 @@ text-align: center;
 <div class="footer">
 <p>© Copyright 2023 Flipick</p>
 </div>
-<div class="diclaim">
-<p> Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book "Treasury Management" published by IIBF. All content rights vest with IIBF </p>
-</div>
 """
 
 

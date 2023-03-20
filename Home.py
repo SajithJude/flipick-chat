@@ -37,7 +37,7 @@ text-align: center;
 
 
 
-favicon = "logo_flipick_colored.png"
+favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
 
 st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 

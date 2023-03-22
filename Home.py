@@ -42,7 +42,7 @@ def generate_answer():
         st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 col1, col2 = st.columns([2.3, 1])
-col2.image("Flipick_Logo-1.jpg", width=210)
+col2.image("Flipick_Logo-1.jpg", width=160)
 st.write("")
 st.write("")
 

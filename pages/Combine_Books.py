@@ -28,7 +28,7 @@ def create_index(pdf_files):
     texts = []
     for pdf_file in pdf_files:
         with open("content/"+pdf_file, 'rb') as f:
-            pdf_reader = PyPDF2.PdfFileReader(f)
+            pdf_reader = PyPDF2.PdfReader(f)
             text = ""
             for page in range(len(pdf_reader.pages)):
                 text += pdf_reader.pages[page].extract_text()

@@ -78,9 +78,11 @@ with st.expander("Upload pdfs and create index"):
      # List all json files in the directory
     files = os.listdir('.')
     json_files = [f for f in files if f.endswith('.json')]
+    pdf_files = [f for f in files if f.endswith('.pdf')]
 
     # Create a dropdown to select the index file
     index_file = st.selectbox("Select an index file:", json_files)
+    document_files_pdf = st.selectbox("LIst of available PDFs:", json_files)
 
    
 

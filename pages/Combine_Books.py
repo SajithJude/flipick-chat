@@ -63,7 +63,7 @@ with st.expander("Upload pdfs and create index"):
 
     # If PDF files are uploaded, create and save the index
     if pdf_files:
-        directory_path = "pdfs/"
+        directory_path = "content/"
         if not os.path.exists(directory_path):
             os.makedirs(directory_path)
         for pdf_file in pdf_files:
@@ -82,12 +82,7 @@ with st.expander("Upload pdfs and create index"):
     # Create a dropdown to select the index file
     index_file = st.selectbox("Select an index file:", json_files)
 
-    # If an index file is selected, create the index
-    if index_file:
-        index = create_index(index_file)
-        st.success(f"Index loaded from {index_file}")
-    else:
-        st.warning("No index file selected.")
+   
 
 col1, col2 = st.columns([1.4, 1])
 col2.image("Flipick_Logo-1.jpg", width=210)

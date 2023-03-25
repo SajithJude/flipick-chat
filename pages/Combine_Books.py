@@ -27,7 +27,7 @@ def create_index(pdf_files):
     # Load the PDF files and extract text
     texts = []
     for pdf_file in pdf_files:
-        with open(pdf_file, 'rb') as f:
+        with open("content/"+pdf_file, 'rb') as f:
             pdf_reader = PyPDF2.PdfFileReader(f)
             text = ""
             for page in range(pdf_reader.getNumPages()):

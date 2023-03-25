@@ -35,8 +35,8 @@ def create_index(pdf_files):
             texts.append(text)
 
     # Create documents
-    documents = [Document(texts[0], id=os.path.basename(pdf_files[0])),
-                 Document(texts[1], id=os.path.basename(pdf_files[1]))]
+    documents = [Document(texts[0]),
+                 Document(texts[1])]
 
     # Create and save the index
     index = GPTSimpleVectorIndex(documents)

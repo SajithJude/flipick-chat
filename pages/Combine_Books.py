@@ -23,11 +23,25 @@ def extract_text(file):
     return text
 
 # Define function to create and save the index
-def create_index(directory_path, index_file_name):
-    reader = SimpleDirectoryReader(directory_path).load_data()
-    # documents = Document(reader)
-    index = GPTSimpleVectorIndex(reader)
-    index.save_to_disk(index_file_name)
+def create_index(pdf_files):
+    # Load the PDF files and extract text
+    texts = []
+    for pdf_file in pdf_files:
+        with open(pdf_file, 'rb') as f:
+            pdf_reader = PyPDF2.PdfFileReader(f)
+            text = ""
+            for page in range(pdf_reader.getNumPages()):
+                text += pdf_reader.getPage(page).extractText()
+            texts.append(text)
+
+    # Create documents
+    documents = [Document(texts[0], id=os.path.basename(pdf_files[0])),
+                 Document(texts[1], id=os.path.basename(pdf_files[1]))]
+
+    # Create and save the index
+    index = GPTSimpleVectorIndex(documents)
+    index.save_to_disk("index.json")
+
     return index
 
 if "history" not in st.session_state:
@@ -69,10 +83,10 @@ with st.expander("Upload pdfs and create index"):
         for pdf_file in pdf_files:
             with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
                 f.write(pdf_file.getbuffer())
-        index_file_name = "Combined_index.json"
-        index = create_index(directory_path, index_file_name)
-        st.write(index_file_name)
-        st.success(f"Index saved to {index_file_name}")
+        # index_file_name = "Combined_index.json"
+        # index = create_index(directory_path, index_file_name)
+        # st.write(index_file_name)
+        st.success(f"PDF succesfully uploaded to Path {directory_path}")
 
     # List all json
      # List all json files in the directory
@@ -82,8 +96,11 @@ with st.expander("Upload pdfs and create index"):
     pdf_files = [f for f in psdfs if f.endswith('.pdf')]
 
     # Create a dropdown to select the index file
-    index_file = st.selectbox("Select an index file:", json_files)
-    document_files_pdf = st.selectbox("LIst of available PDFs:", pdf_files)
+    # index_file = st.selectbox("Select an index file:", json_files)
+    document_files_pdf = st.multiselect("LIst of available PDFs:", pdf_files)
+    if document_files_pdf:
+        index = create_index(document_files_pdf)
+        st.success(f"Index successfully created with {str(document_files_pdf)}")
 
    
 

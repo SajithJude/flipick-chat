@@ -77,8 +77,9 @@ with st.expander("Upload pdfs and create index"):
     # List all json
      # List all json files in the directory
     files = os.listdir('.')
+    psdfs = os.listdir('content/')
     json_files = [f for f in files if f.endswith('.json')]
-    pdf_files = [f for f in files if f.endswith('.pdf')]
+    pdf_files = [f for f in psdfs if f.endswith('.pdf')]
 
     # Create a dropdown to select the index file
     index_file = st.selectbox("Select an index file:", json_files)

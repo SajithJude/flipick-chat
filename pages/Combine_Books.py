@@ -82,7 +82,7 @@ with st.expander("Upload pdfs and create index"):
 
     # Create a dropdown to select the index file
     index_file = st.selectbox("Select an index file:", json_files)
-    document_files_pdf = st.selectbox("LIst of available PDFs:", json_files)
+    document_files_pdf = st.selectbox("LIst of available PDFs:", pdf_files)
 
    
 

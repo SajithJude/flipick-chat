@@ -89,7 +89,7 @@ with st.expander("Upload pdf and select index"):
 
     # If an index file is selected, create the index
     if index_file:
-        index_files = [os.path.join('.', idx) for idx in selected_indexes]
+        index_files = [os.path.join('.', idx) for idx in index_file]
         indexes = [create_index(idx) for idx in index_files]
         index = GPTSimpleVectorIndex.merge(*indexes)
         st.success(f"Indexes merged from {index_files}")

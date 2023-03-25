@@ -24,9 +24,9 @@ def extract_text(file):
 
 # Define function to create and save the index
 def create_index(directory_path, index_file_name):
-    reader = SimpleDirectoryReader(directory_path)
-    documents = [Document(text, id=filename) for filename, text in reader]
-    index = GPTSimpleVectorIndex(documents)
+    reader = SimpleDirectoryReader(directory_path).load_data()
+    # documents = Document(reader)
+    index = GPTSimpleVectorIndex(reader)
     index.save_to_disk(index_file_name)
     return index
 
@@ -69,7 +69,7 @@ with st.expander("Upload pdfs and create index"):
         for pdf_file in pdf_files:
             with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
                 f.write(pdf_file.getbuffer())
-        index_file_name = "index.json"
+        index_file_name = "Combined_index.json"
         index = create_index(directory_path, index_file_name)
         st.write(index_file_name)
         st.success(f"Index saved to {index_file_name}")

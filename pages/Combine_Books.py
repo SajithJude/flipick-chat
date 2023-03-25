@@ -30,8 +30,8 @@ def create_index(pdf_files):
         with open("content/"+pdf_file, 'rb') as f:
             pdf_reader = PyPDF2.PdfFileReader(f)
             text = ""
-            for page in range(pdf_reader.getNumPages()):
-                text += pdf_reader.getPage(page).extractText()
+            for page in range(len(pdf_reader.pages)):
+                text += pdf_reader.pages[page].extract_text()
             texts.append(text)
 
     # Create documents

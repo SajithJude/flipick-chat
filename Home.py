@@ -3,9 +3,16 @@ from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader, Q
 import os
 import PyPDF2
 
+# import streamlit as st
+import openai 
+# from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader,PromptHelper,QuestionAnswerPrompt
+# import os 
+from streamlit_chat import message as st_message
+
 favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
 st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
+openai.api_key = os.getenv("API_KEY")
 # Define function to extract text from PDF
 def extract_text(file):
     pdf_reader = PyPDF2.PdfReader(file)
@@ -55,26 +62,15 @@ def generate_answer():
             "Given this information, please answer the question: {query_str}\n"
         )
         QA_PROMPT = QuestionAnswerPrompt(QA_PROMPT_TMPL)
-
-        # Load all selected index files and merge them
-        selected_indexes = st.session_state.selected_indexes
-        if selected_indexes:
-            index_files = [os.path.join('.', idx) for idx in selected_indexes]
-            indexes = [create_index(idx) for idx in index_files]
-            index = GPTSimpleVectorIndex.merge(*indexes)
-        else:
-            index = None
-
-        # Query the index and get the bot response
-        if index:
-            message_bot = index.query(query_str, text_qa_template=QA_PROMPT, response_mode="compact", mode="embedding")
-        else:
-            message_bot = "No index file selected."
+        message_bot = index.query(query_str, text_qa_template=QA_PROMPT, response_mode="compact", mode="embedding")
+        # source = message_bot.get_formatted_sources()
+        # st.sidebar.write("Answer Source :",source)  # added line to display source on sidebar
         st.session_state.history.append({"message": user_message, "is_user": True})
         st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
 # Create the app layout
-with st.expander("Upload pdf and select index files"):
+# st.title("PDF Indexer")
+with st.expander("Upload pdf and select index"):
     pdf_file = st.file_uploader("Upload a PDF file")
 
     # If a PDF file is uploaded, create and save the index
@@ -89,12 +85,14 @@ with st.expander("Upload pdf and select index files"):
     json_files = [f for f in files if f.endswith('.json')]
 
     # Create a dropdown to select the index file
-    index_file = st.selectbox("Select an index file:", json_files)
+    index_file = st.multiselect("Select index files:", json_files)
 
     # If an index file is selected, create the index
     if index_file:
-        index = create_index(index_file)
-        st.success(f"Index loaded from {index_file}")
+        index_files = [os.path.join('.', idx) for idx in selected_indexes]
+        indexes = [create_index(idx) for idx in index_files]
+        index = GPTSimpleVectorIndex.merge(*indexes)
+        st.success(f"Indexes merged from {index_files}")
     else:
         st.warning("No index file selected.")
 

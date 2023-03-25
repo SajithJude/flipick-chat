@@ -85,14 +85,12 @@ with st.expander("Upload pdf and select index"):
     json_files = [f for f in files if f.endswith('.json')]
 
     # Create a dropdown to select the index file
-    index_file = st.multiselect("Select index files:", json_files)
+    index_file = st.selectbox("Select an index file:", json_files)
 
     # If an index file is selected, create the index
     if index_file:
-        index_files = [os.path.join('.', idx) for idx in index_file]
-        indexes = [create_index(idx) for idx in index_files]
-        index = GPTSimpleVectorIndex.merge(*indexes)
-        st.success(f"Indexes merged from {index_files}")
+        index = create_index(index_file)
+        st.success(f"Index loaded from {index_file}")
     else:
         st.warning("No index file selected.")
 

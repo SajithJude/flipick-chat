@@ -3,19 +3,10 @@ from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader, Q
 import os
 import PyPDF2
 
-# import streamlit as st
 import openai 
-# from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader,PromptHelper,QuestionAnswerPrompt
-# import os 
+
 from streamlit_chat import message as st_message
 
-    # with st.spinner("Loading index from Disk"):
-
-# try:
-#     index = GPTSimpleVectorIndex.load_from_disk("index.json")
-# except FileNotFoundError:
-#     # If the index file does not exist, set the index to None
-#     index = None
 
 
 

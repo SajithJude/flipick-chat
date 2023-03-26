@@ -22,14 +22,14 @@ else:
     reader = SimpleDirectoryReader("content").load_data()
     # documents = [Document(filename, open(filename, "rb").read()) for filename in reader.get_filenames()]
     index = GPTSimpleVectorIndex(reader)
-    index.save_to_disk('index.json')
+    index.save_to_disk('content/index.json')
     st.success("Index created successfully.")
 
 
-if index is not None:
-    index = GPTSimpleVectorIndex(documents)
-    index.save_to_disk('index.json')
-    st.success("Index created successfully.")
+# if index is not None:
+#     index = GPTSimpleVectorIndex(documents)
+#     index.save_to_disk('index.json')
+#     st.success("Index created successfully.")
 
 # question_answerer = QuestionAnswerPrompt(index)
 

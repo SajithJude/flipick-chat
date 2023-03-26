@@ -55,7 +55,7 @@ for  Name in files:
     delete_status = fields[0]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"
     button_phold = col3.empty()  # create a placeholder
-    do_action = button_phold.button(button_type, key=fields[i])
+    do_action = button_phold.button(button_type, key=i)
     if do_action:
             pass # do some action with a row's data
             button_phold.empty()  #  remove button

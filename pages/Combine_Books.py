@@ -14,36 +14,6 @@ st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
 openai.api_key = os.getenv("API_KEY")
 
-# Define function to extract text from PDF
-def extract_text(file):
-    pdf_reader = PyPDF2.PdfFileReader(file)
-    text = ""
-    for page in range(pdf_reader.getNumPages()):
-        text += pdf_reader.getPage(page).extractText()
-    return text
-
-# Define function to create and save the index
-def create_index(pdf_files):
-    # Load the PDF files and extract text
-    texts = []
-    for pdf_file in pdf_files:
-        with open("content/"+pdf_file, 'rb') as f:
-            pdf_reader = PyPDF2.PdfReader(f)
-            text = ""
-            for page in range(len(pdf_reader.pages)):
-                text += pdf_reader.pages[page].extract_text()
-            texts.append(text)
-
-    # Create documents
-    documents = [Document(texts[0]),
-                 Document(texts[1])]
-
-    # Create and save the index
-    index = GPTSimpleVectorIndex(documents)
-    index.save_to_disk("index.json")
-
-    return index
-
 if "history" not in st.session_state:
     st.session_state.history = []
 
@@ -70,47 +40,33 @@ def generate_answer():
         st.session_state.history.append({"message": user_message, "is_user": True})
         st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
-# Create the app layout
-# st.title("PDF Indexer")
 with st.expander("Upload pdfs and create index"):
     pdf_files = st.file_uploader("Upload PDF files", accept_multiple_files=True)
 
     # If PDF files are uploaded, create and save the index
     if pdf_files:
-        directory_path = "content/"
-        if not os.path.exists(directory_path):
-            os.makedirs(directory_path)
-        for pdf_file in pdf_files:
-            with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
-                f.write(pdf_file.getbuffer())
-        # index_file_name = "Combined_index.json"
-        # index = create_index(directory_path, index_file_name)
-        # st.write(index_file_name)
+        with st.spinner('Uploading file...'):
+            directory_path = "content/"
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
+            for pdf_file in pdf_files:
+                with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
+                    f.write(pdf_file.getbuffer())
+            
         st.success(f"PDF succesfully uploaded to Path {directory_path}")
+        with st.spinner('It will take a few minutes to index the book. Please wait...'):
+            documents = SimpleDirectoryReader('content').load_data()
+            index = GPTSimpleVectorIndex(documents)
+            st.success(f"Index Created Successfully")
 
-    # List all json
-     # List all json files in the directory
-    files = os.listdir('.')
-    psdfs = os.listdir('content/')
-    json_files = [f for f in files if f.endswith('.json')]
-    pdf_files = [f for f in psdfs if f.endswith('.pdf')]
 
-    # Create a dropdown to select the index file
-    # index_file = st.selectbox("Select an index file:", json_files)
-    document_files_pdf = st.multiselect("LIst of available PDFs:", pdf_files)
-    if document_files_pdf:
-        index = create_index(document_files_pdf)
-        st.success(f"Index successfully created with {str(document_files_pdf)}")
+            col1, col2 = st.columns([1.4, 1])
+            col2.image("Flipick_Logo-1.jpg", width=210)
+            st.write("")
+            st.write("")
 
-   
-
-col1, col2 = st.columns([1.4, 1])
-col2.image("Flipick_Logo-1.jpg", width=210)
-st.write("")
-st.write("")
-
-input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
-st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+            input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+            st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
 
 # Display the conversation history
 for chat in st.session_state.history:

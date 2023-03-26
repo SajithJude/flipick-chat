@@ -10,8 +10,8 @@ from streamlit_chat import message as st_message
 
 def display_pdf(directory_path, pdf_file):
     with open(os.path.join(directory_path, pdf_file), "rb") as f:
-        pdf_reader = PyPDF2.PdfFileReader(f)
-        for page_num in range(pdf_reader.getNumPages()):
+        pdf_reader = PyPDF2.PdfReader (f)
+        for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.getPage(page_num)
             st.write(page.extractText())
 

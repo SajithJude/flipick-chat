@@ -47,7 +47,7 @@ for col, field_name in zip(colms, fields):
 i=1
 for  Name in files:
     i+=1
-    col1, col2, col3 = st.columns((1, 1, 1))
+    col1, col2, col3 = st.columns((3, 1, 1))
     # col1.write(x)  # index
     col1.write(Name)  # email
     col2.button("View",key=Name)  # unique ID

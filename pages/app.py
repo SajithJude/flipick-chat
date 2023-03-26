@@ -48,8 +48,8 @@ for  Name in files:
 
     col1, col2, col3 = st.columns((1, 1, 1))
     # col1.write(x)  # index
-    col1.write(user_table['Name'][x])  # email
-    col2.button(user_table['View'][x])  # unique ID
+    col1.write(Name)  # email
+    col2.button("View",key=Name)  # unique ID
     # col4.button(user_table['Delete'][x])   # email status
     delete_status = user_table['Delete'][x]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"

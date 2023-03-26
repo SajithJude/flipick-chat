@@ -1,4 +1,3 @@
-
 import streamlit as st
 from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader, QuestionAnswerPrompt
 import os
@@ -14,34 +13,6 @@ favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
 st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
 openai.api_key = os.getenv("API_KEY")
-# Define function to extract text from PDF
-def extract_text(file):
-    pdf_reader = PyPDF2.PdfReader(file)
-    text = ""
-    for page in range(len(pdf_reader.pages)):
-        text += pdf_reader.pages[page].extract_text()
-    return text
-
-# Define function to create and save the index
-def create_index(index_file):
-    # Load the index file
-    index = GPTSimpleVectorIndex.load_from_disk(index_file)
-
-    return index
-
-def createindex(pdf_file):
-    # Load the PDF file and extract text
-    text = extract_text(pdf_file)
-
-    # Create documents
-    documents = [Document(text)]
-
-    # Create and save the index
-    filename = pdf_file.name.split(".")[0] + ".json"
-    index = GPTSimpleVectorIndex(documents)
-    index.save_to_disk(filename)
-
-    return filename
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -69,39 +40,42 @@ def generate_answer():
         st.session_state.history.append({"message": user_message, "is_user": True})
         st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
-# Create the app layout
-# st.title("PDF Indexer")
-with st.expander("Upload pdf and select index"):
-    pdf_file = st.file_uploader("Upload a PDF file")
 
-    # If a PDF file is uploaded, create and save the index
-    if pdf_file:
-        filename = createindex(pdf_file)
-        st.write(filename)
-        st.success(f"Index saved to {filename}")
+expander = st.expander("Upload pdfs and create index")
+pdf_files = expander.file_uploader("Upload PDF files", accept_multiple_files=True)
+
+if pdf_files:
+    with st.spinner('Uploading file...'):
+        directory_path = "content/"
+        if not os.path.exists(directory_path):
+            os.makedirs(directory_path)
+        for pdf_file in pdf_files:
+            with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
+                f.write(pdf_file.getbuffer())
+
+    st.success(f"PDF succesfully uploaded to Path {directory_path}")
+    with st.spinner('It will take a few minutes to index the book. Please wait...'):
+        documents = SimpleDirectoryReader('content').load_data()
+        index = GPTSimpleVectorIndex(documents)
+    st.success(f"Index Created Successfully")
+
+if expander.expanded:
+    input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+    st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+
+else:
+    input_text = None
 
 
-    # List all json files in the directory
-    files = os.listdir('.')
-    json_files = [f for f in files if f.endswith('.json')]
-
-    # Create a dropdown to select the index file
-    index_file = st.selectbox("Select an index file:", json_files)
-
-    # If an index file is selected, create the index
-    if index_file:
-        index = create_index(index_file)
-        st.success(f"Index loaded from {index_file}")
-    else:
-        st.warning("No index file selected.")
 
 col1, col2 = st.columns([1.4, 1])
 col2.image("Flipick_Logo-1.jpg", width=210)
 st.write("")
 st.write("")
 
-input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
-st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+
+# If PDF files are uploaded, create and save the index
+
 
 # Display the conversation history
 for chat in st.session_state.history:

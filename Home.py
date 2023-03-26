@@ -82,12 +82,10 @@ else:
         index = None
     # return
 
-if expander.expanded:
-    input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
-    st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+# if expander.expanded:
+input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
 
-else:
-    input_text = None
 
 
 

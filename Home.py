@@ -9,6 +9,18 @@ import openai
 # import os 
 from streamlit_chat import message as st_message
 
+INDEX_FILE = "index.json"
+
+try:
+    # Try to load the index from disk
+    with open(INDEX_FILE, "r") as f:
+        index = GPTSimpleVectorIndex.from_json(f.read())
+except FileNotFoundError:
+    # If the index file does not exist, set the index to None
+    index = None
+
+
+
 favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
 st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
 
@@ -62,6 +74,7 @@ if pdf_files:
     with st.spinner('It will take a few minutes to index the book. Please wait...'):
         documents = SimpleDirectoryReader('content').load_data()
         index = GPTSimpleVectorIndex(documents)
+        index.save_to_disk('index.json')
     st.success(f"Index Created Successfully")
 
 if expander.expanded:

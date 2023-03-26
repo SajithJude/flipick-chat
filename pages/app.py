@@ -51,14 +51,14 @@ colms = st.columns((4, 1, 1))
 fields = ["Name", 'View', 'Delete' ]
 for col, field_name in zip(colms, fields):
     # header
-    col.write(field_name)
+    col.subheader(field_name)
 
 i=1
 for  Name in files:
     i+=1
     col1, col2, col3 = st.columns((4 , 1, 1))
     # col1.write(x)  # index
-    col1.subheader(Name)  # email
+    col1.write(Name)  # email
     col2.button("View", key=Name, on_click=display_pdf, args=(directory_path, Name))  # unique ID
     # col4.button(user_table['Delete'][x])   # email status
     delete_status = fields[0]  # flexible type of button

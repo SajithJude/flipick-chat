@@ -25,7 +25,7 @@ else:
     index.save(index_path)
     st.success("Index created")
 
-if index:
+if index is not None:
     index.load(index_path)
     st.success("Index loaded")
 

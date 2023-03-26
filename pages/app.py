@@ -9,10 +9,10 @@ from streamlit_chat import message as st_message
 
 
 
-pdf_file = st.file_uploader("Upload PDF file", type="pdf")
-if pdf_file:
-    with open(os.path.join("content", pdf_file.name), "wb") as f:
-        f.write(pdf_file.getbuffer())
+pdf = st.file_uploader("Upload PDF file", type="pdf")
+if pdf:
+    with open(os.path.join("content", pdf.name), "wb") as f:
+        f.write(pdf.getbuffer())
 
 index_path = os.path.join("content", "index.json")
 if not os.path.exists(index_path):

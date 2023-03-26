@@ -80,13 +80,16 @@ else:
                     f.write(pdf_file.getbuffer())
 
         st.success(f"PDF files successfully uploaded to path {directory_path}. Creating index...")
-        documents = SimpleDirectoryReader('content').load_data()
-        index = GPTSimpleVectorIndex(documents)
-        index.save_to_disk('index.json')
-        st.success("Index created successfully.")
+        with st.spinner("It will take a few Minutes to index the book, Please wait"):
+            documents = SimpleDirectoryReader('content').load_data()
+            index = GPTSimpleVectorIndex(documents)
+            index.save_to_disk('index.json')
+            st.success("Index created successfully.")
+        
     else:
         # If no PDF files are uploaded, set the index to None
         index = None
+        return
 
 if expander.expanded:
     input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)

@@ -35,7 +35,7 @@ else:
 
 # expander = st.expander("Upload pdfs and create index")
 # pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
-pdf_files = st.file_uploader("Upload PDF files", accept_multiple_files=True)
+pdf_files = st.sidebar.file_uploader("Upload PDF files", accept_multiple_files=True)
 if pdf_files:
     # Process the PDF files and create the index
     with st.spinner('Uploading file...'):

@@ -42,6 +42,6 @@ st.write("PDF Files in Directory")
 table = []
 for file in files:
     if file.endswith(".pdf"):
-        row = [file, st.button("View"), st.button("Delete")]
+        row = [file, st.button("View", key=file), st.button("Delete")]
         table.append(row)
 st.table(table)

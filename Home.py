@@ -89,7 +89,7 @@ else:
     else:
         # If no PDF files are uploaded, set the index to None
         index = None
-        return
+    return
 
 if expander.expanded:
     input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)

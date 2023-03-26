@@ -13,7 +13,7 @@ def display_pdf(directory_path, pdf_file):
         pdf_reader = PyPDF2.PdfReader (f)
         for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_num]
-            st.write(page.extractText())
+            st.write(page.extract_text())
 
 
 # expander = st.expander("Upload pdfs and create index")

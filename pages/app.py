@@ -44,7 +44,7 @@ for col, field_name in zip(colms, fields):
     # header
     col.write(field_name)
 
-for x, Name in enumerate(files):
+for  Name in files:
 
     col1, col2, col3 = st.columns((1, 1, 1))
     col1.write(x)  # index

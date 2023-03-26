@@ -13,9 +13,9 @@ INDEX_FILE = "index.json"
 
 try:
     # Try to load the index from disk
-    with open(INDEX_FILE, "r") as f:
+    # with open(INDEX_FILE, "r") as f:
 
-        index = GPTSimpleVectorIndex.load_from_disk(f)
+    index = GPTSimpleVectorIndex.load_from_disk(INDEX_FILE)
 except FileNotFoundError:
     # If the index file does not exist, set the index to None
     index = None

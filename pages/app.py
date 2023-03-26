@@ -44,7 +44,7 @@ for file in files:
 
     if file.endswith(".pdf"):
 
-        row = [file, st.button("View", label=file ,key=file), st.button("Delete",key=(file+file))]
+        row = [file, st.button("View" ,key=file), st.button("Delete",key=(file+file))]
         table.append(row)
 
-st.table(table)
+    st.table(table)

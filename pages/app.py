@@ -13,7 +13,7 @@ def display_pdf(directory_path, pdf_file):
         pdf_reader = PyPDF2.PdfReader (f)
         for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_num]
-            with st.expander('{page}')
+            with st.expander('Page')
                 st.write(page.extract_text())
 
 

@@ -11,11 +11,11 @@ from streamlit_chat import message as st_message
 
     # with st.spinner("Loading index from Disk"):
 
-try:
-    index = GPTSimpleVectorIndex.load_from_disk("index.json")
-except FileNotFoundError:
-    # If the index file does not exist, set the index to None
-    index = None
+# try:
+#     index = GPTSimpleVectorIndex.load_from_disk("index.json")
+# except FileNotFoundError:
+#     # If the index file does not exist, set the index to None
+#     index = None
 
 
 

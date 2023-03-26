@@ -51,7 +51,7 @@ for  Name in files:
     col1.write(Name)  # email
     col2.button("View",key=Name)  # unique ID
     # col4.button(user_table['Delete'][x])   # email status
-    delete_status = user_table['Delete'][x]  # flexible type of button
+    delete_status = fields[0]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"
     button_phold = col3.empty()  # create a placeholder
     do_action = button_phold.button(button_type, key=x)

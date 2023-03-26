@@ -68,7 +68,7 @@ else:
 
 
 
-col1, col2 = st.columns([1.4, 1])
+col1, col2 = st.columns([1.5, 1])
 col2.image("Flipick_Logo-1.jpg", width=210)
 st.write("")
 st.write("")

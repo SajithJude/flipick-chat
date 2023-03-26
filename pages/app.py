@@ -47,13 +47,13 @@ for col, field_name in zip(colms, fields):
 for  Name in files:
 
     col1, col2, col3 = st.columns((1, 1, 1))
-    col1.write(x)  # index
-    col2.write(user_table['Name'][x])  # email
-    col3.button(user_table['View'][x])  # unique ID
+    # col1.write(x)  # index
+    col1.write(user_table['Name'][x])  # email
+    col2.button(user_table['View'][x])  # unique ID
     # col4.button(user_table['Delete'][x])   # email status
     delete_status = user_table['Delete'][x]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"
-    button_phold = col5.empty()  # create a placeholder
+    button_phold = col3.empty()  # create a placeholder
     do_action = button_phold.button(button_type, key=x)
     if do_action:
             pass # do some action with a row's data

@@ -29,7 +29,7 @@ if index:
     index.load(index_path)
     st.success("Index loaded")
 
-question_answerer = QuestionAnswerPrompt(index)
+# question_answerer = QuestionAnswerPrompt(index)
 
 def chatbot(message):
     response = question_answerer.answer(message)

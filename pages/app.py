@@ -37,12 +37,9 @@ directory_path = "content/"
 # Get a list of files in the directory
 files = os.listdir(directory_path)
 
-# Create a table to display the files
-st.write("PDF Files in Directory")
-table = []
-for file in files:
+colms = st.columns((1, 2, 2, 1, 1))
 
-    row = [file, st.button("View" ,key=file), st.button("Delete",key=(file+file))]
-    table.append(row)
-
-    st.table(table)
+# fields = ["№", 'email', 'uid', 'verified', "action"]
+for col, field_name in zip(colms, files):
+    # header
+    col.write(field_name)

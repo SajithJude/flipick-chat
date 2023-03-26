@@ -44,8 +44,9 @@ for col, field_name in zip(colms, fields):
     # header
     col.write(field_name)
 
+i=1
 for  Name in files:
-
+    1+=1
     col1, col2, col3 = st.columns((1, 1, 1))
     # col1.write(x)  # index
     col1.write(Name)  # email
@@ -54,7 +55,7 @@ for  Name in files:
     delete_status = fields[0]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"
     button_phold = col3.empty()  # create a placeholder
-    do_action = button_phold.button(button_type, key=fields[2])
+    do_action = button_phold.button(button_type, key=fields[i])
     if do_action:
             pass # do some action with a row's data
             button_phold.empty()  #  remove button

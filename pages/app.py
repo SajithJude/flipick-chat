@@ -19,11 +19,12 @@ if not os.path.exists(index_path):
     st.warning("Please upload a PDF file to create the index")
     index = None
 else:
-    reader = SimpleDirectoryReader("content", extension="pdf")
-    documents = [Document(filename, open(filename, "rb").read()) for filename in reader.get_filenames()]
-    index = GPTSimpleVectorIndex(documents)
-    index.save(index_path)
-    st.success("Index created")
+    reader = SimpleDirectoryReader("content").load_data()
+    # documents = [Document(filename, open(filename, "rb").read()) for filename in reader.get_filenames()]
+    index = GPTSimpleVectorIndex(reader)
+    index.save_to_disk('index.json')
+    st.success("Index created successfully.")
+
 
 if index is not None:
     index = GPTSimpleVectorIndex(documents)

@@ -29,3 +29,19 @@ if pdf_files:
         index = GPTSimpleVectorIndex(documents)
         index.save_to_disk('index.json')
         st.success("Index created successfully.")
+
+
+# Define the directory path
+directory_path = "content/"
+
+# Get a list of files in the directory
+files = os.listdir(directory_path)
+
+# Create a table to display the files
+st.write("PDF Files in Directory")
+table = []
+for file in files:
+    if file.endswith(".pdf"):
+        row = [file, st.button("View"), st.button("Delete")]
+        table.append(row)
+st.table(table)

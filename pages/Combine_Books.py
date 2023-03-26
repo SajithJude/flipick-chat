@@ -40,6 +40,12 @@ def generate_answer():
         st.session_state.history.append({"message": user_message, "is_user": True})
         st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
+
+col1, col2 = st.columns([1.4, 1])
+col2.image("Flipick_Logo-1.jpg", width=210)
+st.write("")
+st.write("")
+
 expander = st.expander("Upload pdfs and create index")
 pdf_files = expander.file_uploader("Upload PDF files", accept_multiple_files=True)
 
@@ -61,15 +67,12 @@ if pdf_files:
 
 if expander.expanded:
     input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+    st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+
 else:
     input_text = None
 
-col1, col2 = st.columns([1.4, 1])
-col2.image("Flipick_Logo-1.jpg", width=210)
-st.write("")
-st.write("")
 
-st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
 
 # Display the conversation history
 for chat in st.session_state.history:

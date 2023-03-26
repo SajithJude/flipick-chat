@@ -4,10 +4,16 @@ import os
 import PyPDF2
 
 import openai 
-
+import PyPDF2
 from streamlit_chat import message as st_message
 
 
+def display_pdf(directory_path, pdf_file):
+    with open(os.path.join(directory_path, pdf_file), "rb") as f:
+        pdf_reader = PyPDF2.PdfFileReader(f)
+        for page_num in range(pdf_reader.getNumPages()):
+            page = pdf_reader.getPage(page_num)
+            st.write(page.extractText())
 
 
 # expander = st.expander("Upload pdfs and create index")
@@ -37,7 +43,7 @@ directory_path = "content/"
 # Get a list of files in the directory
 files = os.listdir(directory_path)
 
-colms = st.columns((3, 1, 1))
+colms = st.columns((4, 1, 1))
 
 fields = ["Name", 'View', 'Delete' ]
 for col, field_name in zip(colms, fields):
@@ -47,10 +53,10 @@ for col, field_name in zip(colms, fields):
 i=1
 for  Name in files:
     i+=1
-    col1, col2, col3 = st.columns((3, 1, 1))
+    col1, col2, col3 = st.columns((4 , 1, 1))
     # col1.write(x)  # index
     col1.write(Name)  # email
-    col2.button("View",key=Name)  # unique ID
+    col2.button("View", key=Name, on_click=display_pdf, args=(directory_path, Name))  # unique ID
     # col4.button(user_table['Delete'][x])   # email status
     delete_status = fields[0]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"
@@ -59,3 +65,4 @@ for  Name in files:
     if do_action:
             pass # do some action with a row's data
             button_phold.empty()  #  remove button
+

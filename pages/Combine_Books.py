@@ -59,8 +59,8 @@ with st.expander("Upload pdfs and create index"):
             index = GPTSimpleVectorIndex(documents)
             st.success(f"Index Created Successfully")
         # Hide the text input widget if PDF files are uploaded
-        if st.session_state.history:
-            input_text = None
+    if st.session_state.history:
+        input_text = None
 
     
 col1, col2 = st.columns([1.4, 1])

@@ -31,8 +31,8 @@ if index:
 
 # question_answerer = QuestionAnswerPrompt(index)
 
-def chatbot(message):
-    response = question_answerer.answer(message)
-    st_message(response)
+# def chatbot(message):
+#     response = question_answerer.answer(message)
+#     st_message(response)
 
-st.chatbot(callback=chatbot)
+# st.chatbot(callback=chatbot)

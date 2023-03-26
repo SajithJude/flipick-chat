@@ -16,7 +16,9 @@ def display_pdf(directory_path, pdf_file):
             with st.expander('Page'):
                 st.write(page.extract_text())
 
-
+def delete_pdf(directory_path, pdf_file):
+    os.remove(os.path.join(directory_path, pdf_file))
+    
 # expander = st.expander("Upload pdfs and create index")
 # pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
 pdf_files = st.file_uploader("Upload PDF files", accept_multiple_files=True)
@@ -62,7 +64,7 @@ for  Name in files:
     delete_status = fields[0]  # flexible type of button
     button_type = "Delete" if delete_status else "Gone"
     button_phold = col3.empty()  # create a placeholder
-    do_action = button_phold.button(button_type, key=i)
+    do_action = button_phold.button(button_type, key=i, on_click=delete_pdf, args=(directory_path, Name))
     if do_action:
             pass # do some action with a row's data
             button_phold.empty()  #  remove button

@@ -37,7 +37,7 @@ directory_path = "content/"
 # Get a list of files in the directory
 files = os.listdir(directory_path)
 
-colms = st.columns((1, 1, 1))
+colms = st.columns((3, 1, 1))
 
 fields = ["Name", 'View', 'Delete' ]
 for col, field_name in zip(colms, fields):

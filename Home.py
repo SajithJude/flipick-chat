@@ -49,7 +49,28 @@ st.write("")
 
 # expander = st.expander("Upload pdfs and create index")
 # pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
+pdf_files = st.file_uploader("Upload PDF files", accept_multiple_files=True)
+if pdf_files:
+    # Process the PDF files and create the index
+    with st.spinner('Uploading file...'):
+        directory_path = "content/"
+        if not os.path.exists(directory_path):
+            os.makedirs(directory_path)
+        for pdf_file in pdf_files:
+            with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
+                f.write(pdf_file.getbuffer())
 
+    st.success(f"PDF files successfully uploaded to path {directory_path}. Creating index...")
+    with st.spinner("It will take a few Minutes to index the book, Please wait"):
+        documents = SimpleDirectoryReader('content').load_data()
+        index = GPTSimpleVectorIndex(documents)
+        index.save_to_disk('index.json')
+        st.success("Index created successfully.")
+    
+else:
+    # If no PDF files are uploaded, set the index to None
+    index = None
+    # return
 
 # import os
 
@@ -59,28 +80,7 @@ if os.path.exists("index.json"):
 else:
     # If the index file does not exist, prompt the user to upload a PDF file
     st.warning("Index file not found. Please upload a PDF file to create the index.")
-    pdf_files = st.file_uploader("Upload PDF files", accept_multiple_files=True)
-    if pdf_files:
-        # Process the PDF files and create the index
-        with st.spinner('Uploading file...'):
-            directory_path = "content/"
-            if not os.path.exists(directory_path):
-                os.makedirs(directory_path)
-            for pdf_file in pdf_files:
-                with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
-                    f.write(pdf_file.getbuffer())
-
-        st.success(f"PDF files successfully uploaded to path {directory_path}. Creating index...")
-        with st.spinner("It will take a few Minutes to index the book, Please wait"):
-            documents = SimpleDirectoryReader('content').load_data()
-            index = GPTSimpleVectorIndex(documents)
-            index.save_to_disk('index.json')
-            st.success("Index created successfully.")
-        
-    else:
-        # If no PDF files are uploaded, set the index to None
-        index = None
-    # return
+    
 
 # if expander.expanded:
 input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)

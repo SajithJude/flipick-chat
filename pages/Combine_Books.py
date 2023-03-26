@@ -40,16 +40,6 @@ def generate_answer():
         st.session_state.history.append({"message": user_message, "is_user": True})
         st.session_state.history.append({"message": str(message_bot), "is_user": False})
 
-
-col1, col2 = st.columns([1.4, 1])
-col2.image("Flipick_Logo-1.jpg", width=210)
-st.write("")
-st.write("")
-
-expander = st.expander("Upload pdfs and create index")
-pdf_files = expander.file_uploader("Upload PDF files", accept_multiple_files=True)
-
-# If PDF files are uploaded, create and save the index
 if pdf_files:
     with st.spinner('Uploading file...'):
         directory_path = "content/"
@@ -72,6 +62,17 @@ if expander.expanded:
 else:
     input_text = None
 
+
+
+col1, col2 = st.columns([1.4, 1])
+col2.image("Flipick_Logo-1.jpg", width=210)
+st.write("")
+st.write("")
+
+expander = st.expander("Upload pdfs and create index")
+pdf_files = expander.file_uploader("Upload PDF files", accept_multiple_files=True)
+
+# If PDF files are uploaded, create and save the index
 
 
 # Display the conversation history

@@ -47,8 +47,8 @@ col2.image("Flipick_Logo-1.jpg", width=210)
 st.write("")
 st.write("")
 
-expander = st.expander("Upload pdfs and create index")
-pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
+# expander = st.expander("Upload pdfs and create index")
+# pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
 
 
 # import os

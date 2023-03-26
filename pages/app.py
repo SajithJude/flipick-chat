@@ -26,8 +26,9 @@ else:
     st.success("Index created")
 
 if index is not None:
-    index.load(index_path)
-    st.success("Index loaded")
+    index = GPTSimpleVectorIndex(documents)
+    index.save_to_disk('index.json')
+    st.success("Index created successfully.")
 
 # question_answerer = QuestionAnswerPrompt(index)
 

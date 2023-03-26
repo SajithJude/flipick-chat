@@ -48,7 +48,7 @@ st.write("")
 st.write("")
 
 expander = st.expander("Upload pdfs and create index")
-pdf_files = expander.file_uploader("Upload PDF files", accept_multiple_files=True)
+pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
 
 
 # import os

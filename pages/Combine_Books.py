@@ -59,17 +59,17 @@ with st.expander("Upload pdfs and create index"):
             index = GPTSimpleVectorIndex(documents)
             st.success(f"Index Created Successfully")
         # Hide the text input widget if PDF files are uploaded
-        if st.session_state.history:
-            input_text = None
+if st.session_state.history:
+    input_text = None
 
     
-    col1, col2 = st.columns([1.4, 1])
-    col2.image("Flipick_Logo-1.jpg", width=210)
-    st.write("")
-    st.write("")
+col1, col2 = st.columns([1.4, 1])
+col2.image("Flipick_Logo-1.jpg", width=210)
+st.write("")
+st.write("")
 
-    input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
-    st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
+input_text = st.text_input("Ask flipick bot a question", key="input_text", on_change=generate_answer)
+st.caption("Disclaimer : This ChatBOT is a pilot built solely for the purpose of a demo to Indian Institute of Banking and Finance (IIBF). The BOT has been trained based on the book Treasury Management published by IIBF. All content rights vest with IIBF")
 
 # Display the conversation history
 for chat in st.session_state.history:

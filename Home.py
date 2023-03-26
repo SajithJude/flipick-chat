@@ -9,10 +9,10 @@ import openai
 # import os 
 from streamlit_chat import message as st_message
 
-INDEX_FILE = "index.json"
 
 try:
     with st.spinner("Loading index from Disk"):
+        INDEX_FILE = "index.json"
         index = GPTSimpleVectorIndex.load_from_disk(INDEX_FILE)
 except FileNotFoundError:
     # If the index file does not exist, set the index to None

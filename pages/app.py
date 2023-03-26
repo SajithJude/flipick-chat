@@ -37,9 +37,24 @@ directory_path = "content/"
 # Get a list of files in the directory
 files = os.listdir(directory_path)
 
-colms = st.columns((1, 2, 2, 1, 1))
+colms = st.columns((1, 1, 1))
 
-# fields = ["№", 'email', 'uid', 'verified', "action"]
-for col, field_name in zip(colms, files):
+fields = ["Name", 'View', 'Delete' ]
+for col, field_name in zip(colms, fields):
     # header
     col.write(field_name)
+
+for x, Name in enumerate(user_table['Name']):
+
+    col1, col2, col3 = st.columns((1, 1, 1))
+    col1.write(x)  # index
+    col2.write(user_table['Name'][x])  # email
+    col3.button(user_table['View'][x])  # unique ID
+    # col4.button(user_table['Delete'][x])   # email status
+    delete_status = user_table['Delete'][x]  # flexible type of button
+    button_type = "Delete" if delete_status else "Gone"
+    button_phold = col5.empty()  # create a placeholder
+    do_action = button_phold.button(button_type, key=x)
+    if do_action:
+            pass # do some action with a row's data
+            button_phold.empty()  #  remove button

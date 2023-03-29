@@ -19,7 +19,7 @@ if uploaded_file is not None:
     # Load the PDF contents using the PDFReader class
     loader = PDFReader()
     documents = loader.load_data(file=file_path)
-    index = GPTSimpleVectorIndex.from_documents(documents)
+    index = GPTSimpleVectorIndex(documents)
     response = index.query("What is this book about")
     st.write(response)
 

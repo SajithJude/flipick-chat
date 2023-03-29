@@ -6,3 +6,4 @@ streamlit-chat
 langchain
 pinecone-client
 unstructured
+unstructured[local-inference]

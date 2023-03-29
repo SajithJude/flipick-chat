@@ -8,6 +8,7 @@ from llama_index import GPTListIndex, LLMPredictor, ServiceContext
 from langchain import OpenAI
 from llama_index.indices.composability import ComposableGraph
 
+from llama_index.indices.query.query_transform.base import DecomposeQueryTransform
 
 
 # do imports
@@ -62,8 +63,8 @@ graph = ComposableGraph.load_from_disk(
     service_context=service_context,
 )
 
+st.write(graph)
 # define a decompose transform
-from llama_index.indices.query.query_transform.base import DecomposeQueryTransform
 decompose_transform = DecomposeQueryTransform(
     llm_predictor, verbose=True
 )

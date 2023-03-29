@@ -4,4 +4,5 @@ openai
 PyPDF2
 streamlit-chat
 langchain
-faiss-cpu
+pinecone-client
+unstructured

@@ -1,18 +1,16 @@
+import os
+from pathlib import Path 
 from llama_index import download_loader, GPTSimpleVectorIndex, ServiceContext
-from pathlib import Path
 import streamlit as st
-years = [1,2]
-UnstructuredReader = download_loader("UnstructuredReader", refresh_cache=True)
 
-loader = UnstructuredReader()
-doc_set = {}
-all_docs = []
-for year in years:
-    year_docs = loader.load_data(file=Path(f'content/*_{year}.pdf'), split_documents=False)
-    st.write(year_docs)
-    # insert year metadata into each year
-    for d in year_docs:
-        d.extra_info = {"year": year}
-    doc_set[year] = year_docs
-    all_docs.extend(year_docs)
-    # content\HAND BOOK ON DEBT RECOVERY_1.pdf
+index_set = {}
+service_context = ServiceContext.from_defaults(chunk_size_limit=512)
+
+content_dir = Path("content")
+for pdf_file in content_dir.glob("*.pdf"):
+    file_path = str(pdf_file.resolve())
+    file_name = pdf_file.stem
+    cur_index = GPTSimpleVectorIndex.from_documents({file_name: file_path}, service_context=service_context)
+    index_set[file_name] = cur_index
+    cur_index.save_to_disk(f'index_{file_name}.json')
+    st.write(f'index_{file_name}.json')

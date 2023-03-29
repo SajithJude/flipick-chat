@@ -31,7 +31,7 @@ if pdf_files:
             # Create a document and index for the PDF file
             document = Document(f.read(), pdf_file.name)
             index = GPTSimpleVectorIndex([document])
-            index.save_to_disk(f"{pdf_file.name}.index")
+            index.save_to_disk(f"{pdf_file.name}.json")
             indexes.append(index)
 
     st.success(f"PDF files successfully uploaded to path {directory_path}. Creating indexes...")

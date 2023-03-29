@@ -69,27 +69,24 @@ st.title("🤖 Chat Bot with 🧠")
 API_O = os.getenv("API_KEY")
 
 # Session state storage would be ideal
-if API_O:
+
     # Create an OpenAI instance
-    llm = OpenAI(temperature=0,
-                openai_api_key=API_O, 
-                model_name=MODEL, 
-                verbose=False) 
+llm = OpenAI(temperature=0,
+            openai_api_key=API_O, 
+            model_name=MODEL, 
+            verbose=False) 
 
 
-    # Create a ConversationEntityMemory object if not already created
-    if 'entity_memory' not in st.session_state:
-            st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K )
-        
-        # Create the ConversationChain object with the specified configuration
-    Conversation = ConversationChain(
-            llm=llm, 
-            prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
-            memory=st.session_state.entity_memory
-        )  
-else:
-    st.sidebar.warning('API key required to try this app.The API key is not stored in any form.')
-    # st.stop()
+# Create a ConversationEntityMemory object if not already created
+if 'entity_memory' not in st.session_state:
+        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K )
+    
+    # Create the ConversationChain object with the specified configuration
+Conversation = ConversationChain(
+        llm=llm, 
+        prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+        memory=st.session_state.entity_memory
+    )  
 
 
 # Add a button to start a new chat

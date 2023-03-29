@@ -70,7 +70,7 @@ chain = load_qa_chain(llm, chain_type="stuff")
 
 query = st.text_input("Input question")
 if query:
-    docs = index.query(query, include_metadata=True, namespace=index_name)
+    docs = index.query(query, include_metadata=True, namespace=index_name, top_k=1)
 
     st.write(chain.run(input_documents=docs, question=query))
 

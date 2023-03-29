@@ -43,10 +43,25 @@ embeddings, docsearch = prepare_embeddings_and_pinecone_index()
 llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
 chain = load_qa_chain(llm, chain_type="stuff")
 
+
 index_name = "langchain-openai"
-namespace = "book"
+namespace = "book
+# Initialize conversation history
+if 'conversation_history' not in st.session_state:
+    st.session_state.conversation_history = []
 
 query = st.text_input("Input question")
 if query:
-    docs = docsearch.similarity_search(query,include_metadata=True, namespace=namespace)
-    st.write(chain.run(input_documents=docs, question=query))
+    # Add user query to the conversation history
+    st.session_state.conversation_history.append(f"User: {query}")
+
+    docs = docsearch.similarity_search(query,
+                                       include_metadata=True, namespace=namespace)
+
+    conversation_input = ' '.join(st.session_state.conversation_history)
+    answer = chain.run(input_documents=docs, question=conversation_input)
+
+    # Add model response to the conversation history
+    st.session_state.conversation_history.append(f"Assistant: {answer}")
+
+    st.write(answer)

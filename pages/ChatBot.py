@@ -14,6 +14,7 @@ index_set = {}
 content_dir = Path("content")
 for pdf_file in content_dir.glob("*.pdf"):
     file_path = str(pdf_file.resolve())
+    file_name = pdf_file.stem
     st.write(file_path)
     year_docs = loader.load_data(file=Path(file_path), split_documents=False)
     cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)

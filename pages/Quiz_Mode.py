@@ -12,6 +12,7 @@ from langchain.prompts import PromptTemplate
 from pathlib import Path
 import os
 import openai
+import PyPDF2
 from PyPDF2 import PdfFileReader
 
 # load_dotenv()
@@ -43,7 +44,7 @@ def read_pdf(file):
         page = pdf_reader.pages[page_num]
         content+= page.extract_text()
     return content
-    
+
 # Load the Streamlit app
 st.title('PDF AI QuizBot ✨')
 # st.subheader("Follow [@jamescodez](https://twitter.com/jamescodez) on twitter for more!")

@@ -1,14 +1,11 @@
 import streamlit as st
 from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader, QuestionAnswerPrompt
 import os
+import glob
 import PyPDF2
 
 import openai 
-
 from streamlit_chat import message as st_message
-
-
-
 
 favicon = "favicon.ac8d93a.69085235180674d80d902fdc4b848d0b.png"
 st.set_page_config(page_title="Flipick Chat", page_icon=favicon)
@@ -18,21 +15,21 @@ openai.api_key = os.getenv("API_KEY")
 if "history" not in st.session_state:
     st.session_state.history = []
 
-
-
 col1, col2 = st.columns([2.2, 1])
 col2.image("Flipick_Logo-1.jpg", width=210)
 st.write("")
 st.write("")
 
-if os.path.exists("index.json"):
-    # If the index file exists, load it from disk
-    index = GPTSimpleVectorIndex.load_from_disk("index.json")
-else:
-    # If the index file does not exist, prompt the user to upload a PDF file
-    st.warning("Index file not found. Please upload a PDF file to create the index.")
-    
+# Get a list of all index files in the content directory
+index_files = glob.glob("content/*.json")
 
+if index_files:
+    # If there are index files available, create a dropdown to select the index file to load
+    index_file = st.selectbox("Select an index file to load:", index_files)
+    index = GPTSimpleVectorIndex.load_from_disk(index_file)
+else:
+    # If there are no index files available, prompt the user to upload a PDF file
+    st.warning("No index files found. Please upload a PDF file to create an index.")
     
 
 def generate_answer():

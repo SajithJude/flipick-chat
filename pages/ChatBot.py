@@ -9,6 +9,7 @@ openai.api_key = os.getenv("API_KEY")
 
 UnstructuredReader = download_loader("UnstructuredReader", refresh_cache=True)
 loader = UnstructuredReader()
+service_context = ServiceContext.from_defaults(chunk_size_limit=512)
 
 content_dir = Path("content")
 for pdf_file in content_dir.glob("*.pdf"):
@@ -23,7 +24,6 @@ for pdf_file in content_dir.glob("*.pdf"):
 # st.write(len(content_dir.glob("*.json")))
 
 # index_set = {}
-# service_context = ServiceContext.from_defaults(chunk_size_limit=512)
 
 # content_dir = Path("content")
 # for pdf_file in content_dir.glob("*.pdf"):

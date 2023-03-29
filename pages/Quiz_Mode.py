@@ -37,14 +37,13 @@ QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "cont
 
 # Define a function to read a PDF file and return its text content
 def read_pdf(file):
-    with io.BytesIO(file) as data:
-        read_pdf = PdfFileReader(data)
-        content = ""
-        for i in range(read_pdf.getNumPages()):
-            content += read_pdf.getPage(i).extractText() + " "
+    pdf_reader = PyPDF2.PdfReader(file)
+    content= ""
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
+        content+= page.extract_text()
     return content
-
-
+    
 # Load the Streamlit app
 st.title('PDF AI QuizBot ✨')
 # st.subheader("Follow [@jamescodez](https://twitter.com/jamescodez) on twitter for more!")

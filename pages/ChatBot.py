@@ -10,7 +10,7 @@ openai.api_key = os.getenv("API_KEY")
 UnstructuredReader = download_loader("UnstructuredReader", refresh_cache=True)
 loader = UnstructuredReader()
 service_context = ServiceContext.from_defaults(chunk_size_limit=512)
-
+index_set = {}
 content_dir = Path("content")
 for pdf_file in content_dir.glob("*.pdf"):
     file_path = str(pdf_file.resolve())

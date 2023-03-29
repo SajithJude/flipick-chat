@@ -30,7 +30,6 @@ def prepare_embeddings_and_pinecone_index():
     docsearch = Pinecone(index_name=index_name, namespace=namespace)
     return embeddings, docsearch
 
-embeddings, docsearch = prepare_embeddings_and_pinecone_index()
 
 llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
 chain = load_qa_chain(llm, chain_type="stuff")
@@ -41,8 +40,8 @@ if 'pdf_texts' not in st.session_state:
     st.session_state.pdf_texts = {}
 
 
-index_name = "langchain-openai"
-namespace = "book"
+# index_name = "langchain-openai"
+# namespace = "book"
 for uploaded_file in uploaded_files:
     if uploaded_file.name not in st.session_state.pdf_texts:
         texts = load_and_split_data(uploaded_file)
@@ -50,6 +49,7 @@ for uploaded_file in uploaded_files:
         docsearch.upsert_vectors(
             {f"{uploaded_file.name}-{i}": embeddings.embed_text(t.page_content) for i, t in enumerate(texts)}
         )
+embeddings, docsearch = prepare_embeddings_and_pinecone_index()
 
 book_names = list(st.session_state.pdf_texts.keys())
 if book_names:

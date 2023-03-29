@@ -9,6 +9,7 @@ from langchain.chains.question_answering import load_qa_chain
 import openai
 import pinecone
 import streamlit as st
+import re
 
 PERSISTENT_INDEX_FILE = "content/persistent_index.pkl"
 
@@ -42,9 +43,9 @@ pdf_files = [str(p) for p in content_path.glob("*.pdf")]
 
 # if pdf_files:
 selected_pdf = st.selectbox("Select a PDF file", pdf_files)
-
 # if st.button("Initialize Index"):
 index_name = os.path.splitext(os.path.basename(selected_pdf))[0]
+index_name = re.sub('[^a-z0-9]+', '-', index_name.lower()).strip('-')
 
 save_index_name(index_name)
 index_names = load_index_names()

@@ -31,7 +31,7 @@ if pdf_file:
         loader = PDFReader()
         documents = loader.load_data(file=Path(os.path.join(directory_path, pdf_file.name)))
         document = Document(documents[0], pdf_file.name)
-        index = GPTSimpleVectorIndex([document])
+        index = GPTSimpleVectorIndex(document)
         index.save_to_disk(f"{pdf_file.name}.json")
 
     st.success(f"PDF file successfully uploaded to path {directory_path}. Creating index...")

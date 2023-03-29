@@ -9,12 +9,16 @@ st.title("PDF Reader App")
 # Create a file uploader and display the uploaded file
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 if uploaded_file is not None:
-    st.write("Uploaded file:", uploaded_file.name)
+    # Save the uploaded PDF file to the app's data directory
+    file_path = Path("content") / uploaded_file.name
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    st.write("Uploaded file saved to:", file_path)
 
     # Load the PDF contents using the PDFReader class
     loader = PDFReader()
-    file_contents = uploaded_file.read()
-    documents = loader.load_data(file_contents=file_contents)
+    documents = loader.load_data(file=file_path)
 
     # Display the extracted text
     for page in documents:

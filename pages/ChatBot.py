@@ -2,6 +2,9 @@ import os
 from pathlib import Path 
 from llama_index import download_loader, GPTSimpleVectorIndex, ServiceContext
 import streamlit as st
+import openai 
+
+openai.api_key = os.getenv("API_KEY")
 
 index_set = {}
 service_context = ServiceContext.from_defaults(chunk_size_limit=512)

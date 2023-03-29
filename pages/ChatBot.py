@@ -15,8 +15,12 @@ for pdf_file in content_dir.glob("*.pdf"):
     file_path = str(pdf_file.resolve())
     st.write(file_path)
     year_docs = loader.load_data(file=Path(file_path), split_documents=False)
+    cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
+    index_set[file_name] = cur_index
+    cur_index.save_to_disk(f'index_{file_name}.json')
+    st.success("index saved for "+ file_name)
 
-st.write(len(year_docs))
+# st.write(len(content_dir.glob("*.json")))
 
 # index_set = {}
 # service_context = ServiceContext.from_defaults(chunk_size_limit=512)

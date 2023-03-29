@@ -1,6 +1,6 @@
 import streamlit as st
 from pathlib import Path
-from llama_index import download_loader
+from llama_index import download_loader,GPTSimpleVectorIndex
 
 PDFReader = download_loader("PDFReader")
 
@@ -19,9 +19,13 @@ if uploaded_file is not None:
     # Load the PDF contents using the PDFReader class
     loader = PDFReader()
     documents = loader.load_data(file=file_path)
+    index = GPTSimpleVectorIndex.from_documents(documents)
+    response = index.query("What is this book about")
+    st.write(response)
 
-    # Display the extracted text
-    for page in documents:
-        st.write(page)
+
+    # # Display the extracted text
+    # for page in documents:
+    #     st.write(page)
 else:
     st.write("Please upload a PDF file.")

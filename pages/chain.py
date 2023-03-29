@@ -43,6 +43,9 @@ embeddings, docsearch = prepare_embeddings_and_pinecone_index()
 llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
 chain = load_qa_chain(llm, chain_type="stuff")
 
+index_name = "langchain-openai"
+namespace = "book"
+
 query = st.text_input("Input question")
 if query:
     docs = docsearch.similarity_search(query,include_metadata=True, namespace=namespace)

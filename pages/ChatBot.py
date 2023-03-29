@@ -45,6 +45,15 @@ graph = ComposableGraph.from_indices(
     service_context=service_context,
 )
 
+
+graph.save_to_disk('allIndexGraph.json')
+# [optional] load from disk, so you don't need to build graph from scratch
+graph = ComposableGraph.load_from_disk(
+    'allIndexGraph.json', 
+    service_context=service_context,
+)
+
+
 # st.write(len(content_dir.glob("*.json")))
 
 # index_set = {}

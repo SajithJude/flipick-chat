@@ -3,12 +3,11 @@ import pickle
 from pathlib import Path
 from langchain.document_loaders import UnstructuredPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma, Pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
-import pinecone
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 import openai
+import pinecone
 import streamlit as st
 
 PERSISTENT_INDEX_FILE = "content/persistent_index.pkl"
@@ -53,23 +52,23 @@ if pdf_files:
         embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
         texts = load_and_split_data(selected_pdf)
 
-        pinecone.deinitialize()
+        # pinecone.deinitialize()
         pinecone.init(
             api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
             environment="eu-west1-gcp"
         )
-        docsearch = Pinecone(namespace=index_name)
+        index = pinecone.Index(index_name)
 
-        docsearch.upsert_vectors(
-            {f"{index_name}-{i}": embeddings.embed_text(t.page_content) for i, t in enumerate(texts)}
-        )
+        data = [(f"{index_name}-{i}", embeddings.embed_text(t.page_content), {}) for i, t in enumerate(texts)]
+
+        index.upsert(data, namespace=index_name)
 
         llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
         chain = load_qa_chain(llm, chain_type="stuff")
 
         query = st.text_input("Input question")
         if query:
-            docs = docsearch.similarity_search(query, include_metadata=True)
+            docs = index.search(query, include_metadata=True, namespace=index_name)
 
             st.write(chain.run(input_documents=docs, question=query))
 

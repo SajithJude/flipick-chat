@@ -62,16 +62,37 @@ graph = ComposableGraph.load_from_disk(
     service_context=service_context,
 )
 
+# define a decompose transform
+from llama_index.indices.query.query_transform.base import DecomposeQueryTransform
+decompose_transform = DecomposeQueryTransform(
+    llm_predictor, verbose=True
+)
 
-# st.write(len(content_dir.glob("*.json")))
-
-# index_set = {}
-
-# content_dir = Path("content")
-# for pdf_file in content_dir.glob("*.pdf"):
-#     file_path = str(pdf_file.resolve())
-#     file_name = pdf_file.stem
-#     cur_index = GPTSimpleVectorIndex.from_documents({file_name: file_path}, service_context=service_context)
-#     index_set[file_name] = cur_index
-#     cur_index.save_to_disk(f'index_{file_name}.json')
-#     st.write(f'index_{file_name}.json')
+# define query configs for graph 
+query_configs = [
+    {
+        "index_struct_type": "simple_dict",
+        "query_mode": "default",
+        "query_kwargs": {
+            "similarity_top_k": 1,
+            # "include_summary": True
+        },
+        "query_transform": decompose_transform
+    },
+    {
+        "index_struct_type": "list",
+        "query_mode": "default",
+        "query_kwargs": {
+            "response_mode": "tree_summarize",
+            "verbose": True
+        }
+    },
+]
+# graph config
+graph_config = GraphToolConfig(
+    graph=graph,
+    name=f"Graph Index",
+    description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+    query_configs=query_configs,
+    tool_kwargs={"return_direct": True}
+)

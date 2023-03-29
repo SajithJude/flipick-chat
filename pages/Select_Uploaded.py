@@ -1,3 +1,6 @@
+import os
+import pickle
+from pathlib import Path
 from langchain.document_loaders import UnstructuredPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma, Pinecone
@@ -6,8 +9,9 @@ import pinecone
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 import openai
-import os
 import streamlit as st
+
+PERSISTENT_INDEX_FILE = "content/persistent_index.pkl"
 
 def load_and_split_data(pdf_file):
     loader = UnstructuredPDFLoader(pdf_file)
@@ -16,46 +20,58 @@ def load_and_split_data(pdf_file):
     texts = text_splitter.split_documents(data)
     return texts
 
+def save_index_name(index_name):
+    if not os.path.exists(PERSISTENT_INDEX_FILE):
+        with open(PERSISTENT_INDEX_FILE, "wb") as f:
+            pickle.dump(set(), f)
+    with open(PERSISTENT_INDEX_FILE, "rb") as f:
+        index_names = pickle.load(f)
+    index_names.add(index_name)
+    with open(PERSISTENT_INDEX_FILE, "wb") as f:
+        pickle.dump(index_names, f)
+
+def load_index_names():
+    if os.path.exists(PERSISTENT_INDEX_FILE):
+        with open(PERSISTENT_INDEX_FILE, "rb") as f:
+            return pickle.load(f)
+    return set()
+
 openai.api_key = os.getenv("API_KEY")
 
-@st.cache(allow_output_mutation=True, suppress_st_warning=True)
-def prepare_embeddings_and_pinecone_index(index_name):
-    embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
-    pinecone.deinit()
-    pinecone.init(
-        api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
-        environment="eu-west1-gcp"
-    )
-    docsearch = Pinecone(namespace=index_name)
-    return embeddings, docsearch
+content_path = Path("content")
+pdf_files = [str(p) for p in content_path.glob("*.pdf")]
 
-index_name = "multipdf"
-embeddings, docsearch = prepare_embeddings_and_pinecone_index(index_name)
+if pdf_files:
+    selected_pdf = st.selectbox("Select a PDF file", pdf_files)
 
-llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
-chain = load_qa_chain(llm, chain_type="stuff")
+    if st.button("Initialize Index"):
+        index_name = os.path.splitext(os.path.basename(selected_pdf))[0]
 
-uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
+        save_index_name(index_name)
+        index_names = load_index_names()
 
-if 'pdf_texts' not in st.session_state:
-    st.session_state.pdf_texts = {}
+        embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
+        texts = load_and_split_data(selected_pdf)
 
-for uploaded_file in uploaded_files:
-    if uploaded_file.name not in st.session_state.pdf_texts:
-        texts = load_and_split_data(uploaded_file)
-        st.session_state.pdf_texts[uploaded_file.name] = texts
+        pinecone.deinit()
+        pinecone.init(
+            api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
+            environment="eu-west1-gcp"
+        )
+        docsearch = Pinecone(namespace=index_name)
+
         docsearch.upsert_vectors(
-            {f"{uploaded_file.name}-{i}": embeddings.embed_text(t.page_content) for i, t in enumerate(texts)}
+            {f"{index_name}-{i}": embeddings.embed_text(t.page_content) for i, t in enumerate(texts)}
         )
 
-book_names = list(st.session_state.pdf_texts.keys())
-if book_names:
-    selected_book = st.selectbox("Select a book to ask questions", book_names)
+        llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
+        chain = load_qa_chain(llm, chain_type="stuff")
 
-    query = st.text_input("Input question")
-    if query:
-        docs = docsearch.similarity_search(query, include_metadata=True, namespace=selected_book)
+        query = st.text_input("Input question")
+        if query:
+            docs = docsearch.similarity_search(query, include_metadata=True)
 
-        st.write(chain.run(input_documents=docs, question=query))
+            st.write(chain.run(input_documents=docs, question=query))
+
 else:
-    st.write("No PDF files uploaded yet.")
+    st.write("No PDF files found in the 'content' directory.")

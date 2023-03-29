@@ -20,8 +20,9 @@ if uploaded_file is not None:
     loader = PDFReader()
     documents = loader.load_data(file=file_path)
     index = GPTSimpleVectorIndex(documents)
-    response = index.query("What is this book about")
-    st.write(response)
+    index.save_to_disk('{uploaded_file.name}.json')
+    st.write("Inex saved:")
+
 
 
     # # Display the extracted text

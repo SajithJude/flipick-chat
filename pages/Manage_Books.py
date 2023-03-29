@@ -7,7 +7,6 @@ import openai
 import PyPDF2
 from streamlit_chat import message as st_message
 
-
 def display_pdf(directory_path, pdf_file):
     with open(os.path.join(directory_path, pdf_file), "rb") as f:
         pdf_reader = PyPDF2.PdfReader (f)
@@ -19,26 +18,26 @@ def display_pdf(directory_path, pdf_file):
 def delete_pdf(directory_path, pdf_file):
     os.remove(os.path.join(directory_path, pdf_file))
     
-# expander = st.expander("Upload pdfs and create index")
-# pdf_files = expander.file_uploader("Upload PDFs", accept_multiple_files=True)
 pdf_files = st.file_uploader("Upload PDF files", accept_multiple_files=True)
 if pdf_files:
-    # Process the PDF files and create the index
-    with st.spinner('Uploading file...'):
+    # Process the PDF files and create separate indexes for each file
+    indexes = []
+    with st.spinner('Uploading files...'):
         directory_path = "content/"
         if not os.path.exists(directory_path):
             os.makedirs(directory_path)
         for pdf_file in pdf_files:
             with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
                 f.write(pdf_file.getbuffer())
+            # Create a document and index for the PDF file
+            document = Document.from_file(os.path.join(directory_path, pdf_file.name))
+            index = GPTSimpleVectorIndex([document])
+            index.save_to_disk(f"{pdf_file.name}.json")
+            indexes.append(index)
 
-    st.success(f"PDF files successfully uploaded to path {directory_path}. Creating index...")
-    with st.spinner("It will take a few Minutes to index the book, Please wait"):
-        documents = SimpleDirectoryReader('content').load_data()
-        index = GPTSimpleVectorIndex(documents)
-        index.save_to_disk('index.json')
-        st.success("Index created successfully.")
-
+    st.success(f"PDF files successfully uploaded to path {directory_path}. Creating indexes...")
+    st.success(f"{len(indexes)} indexes created successfully.")
+    
 
 # Define the directory path
 directory_path = "content/"
@@ -68,4 +67,3 @@ for  Name in files:
     # if do_action:
     #         pass # do some action with a row's data
     #         button_phold.empty()  #  remove button
-

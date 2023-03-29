@@ -1,6 +1,6 @@
 from llama_index import download_loader, GPTSimpleVectorIndex, ServiceContext
 from pathlib import Path
-import streamlita as st
+import streamlit as st
 years = [1,2]
 UnstructuredReader = download_loader("UnstructuredReader", refresh_cache=True)
 

@@ -1,5 +1,5 @@
 import streamlit as st
-from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader, QuestionAnswerPrompt
+from llama_index import GPTSimpleVectorIndex, Document, SimpleDirectoryReader, QuestionAnswerPrompt, download_loader
 from pathlib import Path
 import os
 

@@ -23,10 +23,11 @@ texts = text_splitter.split_documents(data)
 
 st.write(f'Now you have {len(texts)} documents')
 
+openai.api_key = os.getenv("API_KEY")
 
 
 
-embeddings = OpenAIEmbeddings(openai_api_key="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")
+embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
 
 # initialize pinecone
 pinecone.init(

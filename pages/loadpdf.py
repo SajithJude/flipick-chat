@@ -20,7 +20,7 @@ if uploaded_file is not None:
     loader = PDFReader()
     documents = loader.load_data(file=file_path)
     index = GPTSimpleVectorIndex(documents)
-    index.save_to_disk('{uploaded_file.name}.json')
+    index.save_to_disk(uploaded_file.name+'.json')
     st.write("Inex saved:")
 
 

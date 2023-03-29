@@ -111,5 +111,5 @@ agent_chain = create_llama_chat_agent(
 )
 inp = st.text_input("Enter query")
 if inp:
-    out = agent_chain.run(input="hi, i am bob")
+    out = agent_chain.run(input=inp)
     st.write(out)

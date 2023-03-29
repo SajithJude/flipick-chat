@@ -96,3 +96,20 @@ graph_config = GraphToolConfig(
     query_configs=query_configs,
     tool_kwargs={"return_direct": True}
 )
+
+toolkit = LlamaToolkit(
+    graph_configs=[graph_config]
+)
+
+memory = ConversationBufferMemory(memory_key="chat_history")
+llm=OpenAI(temperature=0)
+agent_chain = create_llama_chat_agent(
+    toolkit,
+    llm,
+    memory=memory,
+    verbose=True
+)
+inp = st.text_input("Enter query")
+if inp:
+    out = agent_chain.run(input="hi, i am bob")
+    st.write(out)

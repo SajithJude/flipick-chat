@@ -1,79 +1,136 @@
-import pickle
-import io
+"""
+This is a Python script that serves as a frontend for a conversational AI model built with the `langchain` and `llms` libraries.
+The code creates a web application using Streamlit, a Python library for building interactive web apps.
+# Author: Avratanu Biswas
+# Date: March 11, 2023
+"""
 
+# Import necessary libraries
 import streamlit as st
-# from dotenv import load_dotenv
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.chains import ConversationChain
+from langchain.chains.conversation.memory import ConversationEntityMemory
+from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 from langchain.llms import OpenAI
-from langchain.chains import ChatVectorDBChain
-from langchain.prompts import PromptTemplate
-from pathlib import Path
-import os
-import openai
-import PyPDF2
-from PyPDF2 import PdfFileReader
+import os 
 
-# load_dotenv()
-OPENAI_KEY = os.getenv('API_KEY')
+# Set Streamlit page configuration
+st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')
+# Initialize session states
+if "generated" not in st.session_state:
+    st.session_state["generated"] = []
+if "past" not in st.session_state:
+    st.session_state["past"] = []
+if "input" not in st.session_state:
+    st.session_state["input"] = ""
+if "stored_session" not in st.session_state:
+    st.session_state["stored_session"] = []
 
-# Define the prompt templates for the chatbot
-_template = """ Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
-Chat History:
-{chat_history}
-Follow Up Input: {question}
-Standalone question:"""
-CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(_template)
+# Define function to get user input
+def get_text():
+    """
+    Get the user input text.
 
-template = """You are an AI version of the {name} .
-You are given the following extracted parts of a long document and a question. Provide a conversational answer.
-Question: {question}
-=========
-{context}
-=========
-Answer:"""
-QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "context", "name"])
+    Returns:
+        (str): The text entered by the user
+    """
+    input_text = st.text_input("You: ", st.session_state["input"], key="input",
+                            placeholder="Your AI assistant here! Ask me anything ...", 
+                            label_visibility='hidden')
+    return input_text
+
+# Define function to start a new chat
+def new_chat():
+    """
+    Clears session state and starts a new chat.
+    """
+    save = []
+    for i in range(len(st.session_state['generated'])-1, -1, -1):
+        save.append("User:" + st.session_state["past"][i])
+        save.append("Bot:" + st.session_state["generated"][i])        
+    st.session_state["stored_session"].append(save)
+    st.session_state["generated"] = []
+    st.session_state["past"] = []
+    st.session_state["input"] = ""
+    st.session_state.entity_memory.store = {}
+    st.session_state.entity_memory.buffer.clear()
+
+# Set up sidebar with various options
+with st.sidebar.expander("🛠️ ", expanded=False):
+    # Option to preview memory store
+    if st.checkbox("Preview memory store"):
+        with st.expander("Memory-Store", expanded=False):
+            st.session_state.entity_memory.store
+    # Option to preview memory buffer
+    if st.checkbox("Preview memory buffer"):
+        with st.expander("Bufffer-Store", expanded=False):
+            st.session_state.entity_memory.buffer
+    MODEL = st.selectbox(label='Model', options=['gpt-3.5-turbo','text-davinci-003','text-davinci-002','code-davinci-002'])
+    K = st.number_input(' (#)Summary of prompts to consider',min_value=3,max_value=1000)
+
+# Set up the Streamlit app layout
+st.title("🤖 Chat Bot with 🧠")
+st.subheader(" Powered by 🦜 LangChain + OpenAI + Streamlit")
+
+# Ask the user to enter their OpenAI API key
+API_O = os.getenv("API_KEY")
+
+# Session state storage would be ideal
+if API_O:
+    # Create an OpenAI instance
+    llm = OpenAI(temperature=0,
+                openai_api_key=API_O, 
+                model_name=MODEL, 
+                verbose=False) 
 
 
-# Define a function to read a PDF file and return its text content
-def read_pdf(file):
-    pdf_reader = PyPDF2.PdfReader(file)
-    content= ""
-    for page_num in range(len(pdf_reader.pages)):
-        page = pdf_reader.pages[page_num]
-        content+= page.extract_text()
-    return content
+    # Create a ConversationEntityMemory object if not already created
+    if 'entity_memory' not in st.session_state:
+            st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K )
+        
+        # Create the ConversationChain object with the specified configuration
+    Conversation = ConversationChain(
+            llm=llm, 
+            prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+            memory=st.session_state.entity_memory
+        )  
+else:
+    st.sidebar.warning('API key required to try this app.The API key is not stored in any form.')
+    # st.stop()
 
-# Load the Streamlit app
-st.title('PDF AI QuizBot ✨')
-# st.subheader("Follow [@jamescodez](https://twitter.com/jamescodez) on twitter for more!")
 
-# Load the PDF file
-uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-if uploaded_file is not None:
-    content = read_pdf(uploaded_file)
+# Add a button to start a new chat
+st.sidebar.button("New Chat", on_click = new_chat, type='primary')
 
-    # Split the text content into chunks
-    text_splitter = CharacterTextSplitter()
-    chunks = text_splitter.split_text(content)
+# Get the user input
+user_input = get_text()
 
-    # Create embeddings from the text chunks
-    vectorStorePkl = Path("vectorstore.pkl")
-    vectorStore = None
-    print("Regenerating search index vector store..")
-    vectorStore = FAISS.from_texts(chunks, OpenAIEmbeddings(openai_api_key=OPENAI_KEY))
-    with open("vectorstore.pkl", "wb") as f:
-        pickle.dump(vectorStore, f)
+# Generate the output using the ConversationChain object and the user input, and add the input/output to the session
+if user_input:
+    output = Conversation.run(input=user_input)  
+    st.session_state.past.append(user_input)  
+    st.session_state.generated.append(output)  
 
-    # Create the chatbot model
-    qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0, openai_api_key=OPENAI_KEY),
-                                    vectorstore=vectorStore, qa_prompt=QA_PROMPT)
+# Allow to download as well
+download_str = []
+# Display the conversation history using an expander, and allow the user to download it
+with st.expander("Conversation", expanded=True):
+    for i in range(len(st.session_state['generated'])-1, -1, -1):
+        st.info(st.session_state["past"][i],icon="🧐")
+        st.success(st.session_state["generated"][i], icon="🤖")
+        download_str.append(st.session_state["past"][i])
+        download_str.append(st.session_state["generated"][i])
+    
+    # Can throw error - requires fix
+    download_str = '\n'.join(download_str)
+    if download_str:
+        st.download_button('Download',download_str)
 
-    # Start the conversation with the chatbot
-    chat_history = []
-    youtuberName = st.text_input(label="Name", placeholder="Enter the name of the AI")
-    userInput = st.text_input(label="Question", placeholder="Ask the AI a question!")
-    if userInput != "":
-        result = qa({"name": youtuberName, "question": userInput, "chat_history": chat_history}, return_only_outputs=True)
-        st.subheader(result["answer"])
+# Display stored conversation sessions in the sidebar
+for i, sublist in enumerate(st.session_state.stored_session):
+        with st.sidebar.expander(label= f"Conversation-Session:{i}"):
+            st.write(sublist)
+
+# Allow the user to clear all stored conversation sessions
+if st.session_state.stored_session:   
+    if st.sidebar.checkbox("Clear-all"):
+        del st.session_state.stored_session

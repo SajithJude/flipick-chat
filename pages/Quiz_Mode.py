@@ -1,9 +1,3 @@
-"""
-This is a Python script that serves as a frontend for a conversational AI model built with the `langchain` and `llms` libraries.
-The code creates a web application using Streamlit, a Python library for building interactive web apps.
-# Author: Avratanu Biswas
-# Date: March 11, 2023
-"""
 
 # Import necessary libraries
 import streamlit as st
@@ -69,7 +63,7 @@ with st.sidebar.expander("🛠️ ", expanded=False):
 
 # Set up the Streamlit app layout
 st.title("🤖 Chat Bot with 🧠")
-st.subheader(" Powered by 🦜 LangChain + OpenAI + Streamlit")
+# st.subheader(" Powered by 🦜 LangChain + OpenAI + Streamlit")
 
 # Ask the user to enter their OpenAI API key
 API_O = os.getenv("API_KEY")

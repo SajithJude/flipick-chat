@@ -45,7 +45,7 @@ chain = load_qa_chain(llm, chain_type="stuff")
 
 
 index_name = "langchain-openai"
-namespace = "book
+namespace = "book"
 # Initialize conversation history
 if 'conversation_history' not in st.session_state:
     st.session_state.conversation_history = []

@@ -27,7 +27,7 @@ def prepare_embeddings_and_pinecone_index():
     )
     index_name = "langchain-openai"
     namespace = "book"
-    docsearch = Pinecone(index_name=index_name, namespace=namespace)
+    docsearch = Pinecone( namespace=namespace)
     return embeddings, docsearch
 
 

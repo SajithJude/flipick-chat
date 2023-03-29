@@ -4,4 +4,4 @@ openai
 PyPDF2
 streamlit-chat
 langchain
-faiss-cpu==1.6.1
+faiss-cpu

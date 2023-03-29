@@ -53,7 +53,7 @@ if pdf_files:
         embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
         texts = load_and_split_data(selected_pdf)
 
-        pinecone.deinit()
+        # pinecone.deinit()
         pinecone.init(
             api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
             environment="eu-west1-gcp"

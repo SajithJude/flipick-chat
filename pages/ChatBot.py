@@ -6,11 +6,17 @@ import openai
 
 openai.api_key = os.getenv("API_KEY")
 
+
+UnstructuredReader = download_loader("UnstructuredReader", refresh_cache=True)
+loader = UnstructuredReader()
+
 content_dir = Path("content")
 for pdf_file in content_dir.glob("*.pdf"):
     file_path = str(pdf_file.resolve())
     st.write(file_path)
+    year_docs = loader.load_data(file=Path(file_path), split_documents=False)
 
+st.write(len(year_docs))
 
 # index_set = {}
 # service_context = ServiceContext.from_defaults(chunk_size_limit=512)

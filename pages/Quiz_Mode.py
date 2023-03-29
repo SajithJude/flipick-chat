@@ -91,7 +91,7 @@ Conversation = ConversationChain(
 
 # Create an instance of GPTSimpleVectorIndex using uploaded documents
 def create_index(documents):
-    index = GPTSimpleVectorIndex.from_documents(documents)
+    index = GPTSimpleVectorIndex(documents)
     return index
 
 uploaded_files = st.file_uploader("Upload one or more documents to answer questions", accept_multiple_files=True)

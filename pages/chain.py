@@ -6,7 +6,7 @@ import pinecone
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 
-
+import os 
 import streamlit as st 
 
 
@@ -42,7 +42,7 @@ docsearch = Pinecone.from_texts(
   index_name=index_name, namespace=namespace)
 
 
-llm = OpenAI(temperature=0, openai_api_key="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")
+llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
 chain = load_qa_chain(llm, chain_type="stuff")
 
 query =st.text_input("Input question")

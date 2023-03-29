@@ -2,7 +2,7 @@ import pickle
 import io
 
 import streamlit as st
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores.faiss import FAISS
 from langchain.text_splitter import CharacterTextSplitter
@@ -14,7 +14,7 @@ import os
 import openai
 from PyPDF2 import PdfFileReader
 
-load_dotenv()
+# load_dotenv()
 OPENAI_KEY = os.getenv('API_KEY')
 
 # Define the prompt templates for the chatbot

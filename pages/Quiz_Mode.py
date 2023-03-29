@@ -1,4 +1,3 @@
-
 # Import necessary libraries
 import streamlit as st
 from langchain.chains import ConversationChain
@@ -6,9 +5,11 @@ from langchain.chains.conversation.memory import ConversationEntityMemory
 from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 from langchain.llms import OpenAI
 import os 
+from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader
 
 # Set Streamlit page configuration
 st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')
+
 # Initialize session states
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -70,58 +71,80 @@ API_O = os.getenv("API_KEY")
 
 # Session state storage would be ideal
 
-    # Create an OpenAI instance
+# Create an OpenAI instance
 llm = OpenAI(temperature=0,
             openai_api_key=API_O, 
             model_name=MODEL, 
             verbose=False) 
 
-
 # Create a ConversationEntityMemory object if not already created
 if 'entity_memory' not in st.session_state:
         st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K )
     
-    # Create the ConversationChain object with the specified configuration
+# Create the
+# Create the ConversationChain object with the specified configuration
 Conversation = ConversationChain(
         llm=llm, 
         prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
         memory=st.session_state.entity_memory
-    )  
+    )
 
+# Create an instance of GPTSimpleVectorIndex using uploaded documents
+def create_index(documents):
+    index = GPTSimpleVectorIndex.from_documents(documents)
+    return index
 
-# Add a button to start a new chat
-st.sidebar.button("New Chat", on_click = new_chat, type='primary')
+uploaded_files = st.file_uploader("Upload one or more documents to answer questions", accept_multiple_files=True)
 
-# Get the user input
-user_input = get_text()
+if uploaded_files:
+    documents = []
+    for file in uploaded_files:
+        if file.name.endswith('.txt'):
+            documents.append(file.read().decode('utf-8'))
+    if documents:
+        index = create_index(documents)
+        question = get_text()
+        if question:
+            response = index.query(question)[0]['answer']
+            st.write(response)
+            st.session_state.past.append(question)
+            st.session_state.generated.append(response)
+    else:
+        st.warning('Please upload a text file')
+else:
+    # Add a button to start a new chat
+    st.sidebar.button("New Chat", on_click = new_chat, type='primary')
 
-# Generate the output using the ConversationChain object and the user input, and add the input/output to the session
-if user_input:
-    output = Conversation.run(input=user_input)  
-    st.session_state.past.append(user_input)  
-    st.session_state.generated.append(output)  
+    # Get the user input
+    user_input = get_text()
 
-# Allow to download as well
-download_str = []
-# Display the conversation history using an expander, and allow the user to download it
-with st.expander("Conversation", expanded=True):
-    for i in range(len(st.session_state['generated'])-1, -1, -1):
-        st.info(st.session_state["past"][i],icon="🧐")
-        st.success(st.session_state["generated"][i], icon="🤖")
-        download_str.append(st.session_state["past"][i])
-        download_str.append(st.session_state["generated"][i])
-    
-    # Can throw error - requires fix
-    download_str = '\n'.join(download_str)
-    if download_str:
-        st.download_button('Download',download_str)
+    # Generate the output using the ConversationChain object and the user input, and add the input/output to the session
+    if user_input:
+        output = Conversation.run(input=user_input)  
+        st.session_state.past.append(user_input)  
+        st.session_state.generated.append(output)  
 
-# Display stored conversation sessions in the sidebar
-for i, sublist in enumerate(st.session_state.stored_session):
-        with st.sidebar.expander(label= f"Conversation-Session:{i}"):
-            st.write(sublist)
+    # Allow to download as well
+    download_str = []
+    # Display the conversation history using an expander, and allow the user to download it
+    with st.expander("Conversation", expanded=True):
+        for i in range(len(st.session_state['generated'])-1, -1, -1):
+            st.info(st.session_state["past"][i],icon="🧐")
+            st.success(st.session_state["generated"][i], icon="🤖")
+            download_str.append(st.session_state["past"][i])
+            download_str.append(st.session_state["generated"][i])
 
-# Allow the user to clear all stored conversation sessions
-if st.session_state.stored_session:   
-    if st.sidebar.checkbox("Clear-all"):
-        del st.session_state.stored_session
+        # Can throw error - requires fix
+        download_str = '\n'.join(download_str)
+        if download_str:
+            st.download_button('Download',download_str)
+
+    # Display stored conversation sessions in the sidebar
+    for i, sublist in enumerate(st.session_state.stored_session):
+            with st.sidebar.expander(label= f"Conversation-Session:{i}"):
+                st.write(sublist)
+
+    # Allow the user to clear all stored conversation sessions
+    if st.session_state.stored_session:   
+        if st.sidebar.checkbox("Clear-all"):
+            del st.session_state.stored_session

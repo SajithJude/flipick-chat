@@ -40,6 +40,9 @@ uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multi
 if 'pdf_texts' not in st.session_state:
     st.session_state.pdf_texts = {}
 
+
+index_name = "langchain-openai"
+namespace = "book"
 for uploaded_file in uploaded_files:
     if uploaded_file.name not in st.session_state.pdf_texts:
         texts = load_and_split_data(uploaded_file)

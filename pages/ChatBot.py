@@ -4,6 +4,11 @@ from llama_index import download_loader, GPTSimpleVectorIndex, ServiceContext
 import streamlit as st
 import openai 
 
+from llama_index import GPTListIndex, LLMPredictor, ServiceContext
+from langchain import OpenAI
+from llama_index.indices.composability import ComposableGraph
+
+
 openai.api_key = os.getenv("API_KEY")
 
 
@@ -21,6 +26,24 @@ for pdf_file in content_dir.glob("*.pdf"):
     index_set[file_name] = cur_index
     cur_index.save_to_disk(f'index_{file_name}.json')
     st.success("index saved for "+ file_name)
+
+
+
+
+index_summaries = [f"{pdf_file.stem}" for pdf_file in content_dir.glob("*.pdf")]
+
+# define an LLMPredictor set number of output tokens
+llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))
+service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
+
+# define a list index over the vector indices
+# allows us to synthesize information across each index
+graph = ComposableGraph.from_indices(
+    GPTListIndex,
+    [index_set[file.stem] for file in content_dir.glob("*.pdf")], 
+    index_summaries=index_summaries,
+    service_context=service_context,
+)
 
 # st.write(len(content_dir.glob("*.json")))
 

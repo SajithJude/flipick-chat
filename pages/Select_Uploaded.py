@@ -59,11 +59,11 @@ if pdf_files:
         )
         index = pinecone.Index(index_name)
 
-        data = []
-        for id,embedding in enumerate(embeddings):
-            metadata = {'metadata1': metadata_value}
-            data.append((id, embedding, metadata))
-        index.upsert(data, namespace=index_name)
+        # data = []
+        # for id,embedding in enumerate(embeddings):
+        #     metadata = {'metadata1': metadata_value}
+        #     data.append((id, embedding, metadata))
+        # index.upsert(data, namespace=index_name)
 
         llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
         chain = load_qa_chain(llm, chain_type="stuff")

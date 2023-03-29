@@ -43,36 +43,36 @@ pdf_files = [str(p) for p in content_path.glob("*.pdf")]
 # if pdf_files:
 selected_pdf = st.selectbox("Select a PDF file", pdf_files)
 
-if st.button("Initialize Index"):
-    index_name = os.path.splitext(os.path.basename(selected_pdf))[0]
+# if st.button("Initialize Index"):
+index_name = os.path.splitext(os.path.basename(selected_pdf))[0]
 
-    save_index_name(index_name)
-    index_names = load_index_names()
+save_index_name(index_name)
+index_names = load_index_names()
 
-    embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
-    texts = load_and_split_data(selected_pdf)
+embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
+texts = load_and_split_data(selected_pdf)
 
-    # pinecone.deinitialize()
-    pinecone.init(
-        api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
-        environment="eu-west1-gcp"
-    )
-    index = pinecone.Index(index_name)
+# pinecone.deinitialize()
+pinecone.init(
+    api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
+    environment="eu-west1-gcp"
+)
+index = pinecone.Index(index_name)
 
-    # data = []
-    # for id,embedding in enumerate(embeddings):
-    #     metadata = {'metadata1': metadata_value}
-    #     data.append((id, embedding, metadata))
-    # index.upsert(data, namespace=index_name)
+# data = []
+# for id,embedding in enumerate(embeddings):
+#     metadata = {'metadata1': metadata_value}
+#     data.append((id, embedding, metadata))
+# index.upsert(data, namespace=index_name)
 
-    llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
-    chain = load_qa_chain(llm, chain_type="stuff")
+llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
+chain = load_qa_chain(llm, chain_type="stuff")
 
-    query = st.text_input("Input question")
-    if query:
-        docs = index.search(query, include_metadata=True, namespace=index_name)
+query = st.text_input("Input question")
+if query:
+    docs = index.search(query, include_metadata=True, namespace=index_name)
 
-        st.write(chain.run(input_documents=docs, question=query))
+    st.write(chain.run(input_documents=docs, question=query))
 
 # else:
 #     st.write("No PDF files found in the 'content' directory.")

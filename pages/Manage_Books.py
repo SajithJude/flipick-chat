@@ -4,7 +4,6 @@ import os
 import PyPDF2
 
 import openai 
-import PyPDF2
 from streamlit_chat import message as st_message
 
 def display_pdf(directory_path, pdf_file):
@@ -30,9 +29,9 @@ if pdf_files:
             with open(os.path.join(directory_path, pdf_file.name), "wb") as f:
                 f.write(pdf_file.getbuffer())
             # Create a document and index for the PDF file
-            document = Document.from_file(os.path.join(directory_path, pdf_file.name))
+            document = Document(f.read(), pdf_file.name)
             index = GPTSimpleVectorIndex([document])
-            index.save_to_disk(f"{pdf_file.name}.json")
+            index.save_to_disk(f"{pdf_file.name}.index")
             indexes.append(index)
 
     st.success(f"PDF files successfully uploaded to path {directory_path}. Creating indexes...")

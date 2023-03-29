@@ -57,6 +57,13 @@ pinecone.init(
     api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
     environment="eu-west1-gcp"
 )
+if index_name not in pinecone.list_indexes():
+    # create the index if it does not exist
+    pinecone.create_index(
+        index_name,
+        dimension=384,
+        metric="cosine"
+    )
 index = pinecone.Index(index_name)
 
 # data = []

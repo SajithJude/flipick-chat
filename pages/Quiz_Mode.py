@@ -65,9 +65,10 @@ with st.sidebar.expander("🛠️ ", expanded=False):
     K = st.number_input(' (#)Summary of prompts to consider',min_value=3,max_value=1000)
     # Option to load an index
     if st.checkbox("Load Index"):
-        index_path = st.text_input("Select an index file")
-        if index_path is not None:
-            st.session_state.index = GPTSimplevectorIndex(index_path)
+        st.session_state.index = GPTSimpleVectorIndex.load_from_disk('index.json')
+
+        # index_path = st.text_input("Select an index file")
+        # if index_path is not None:
 
 # Set up the Streamlit app layout
 st.title("🤖 Chat Bot with 🧠")
@@ -99,7 +100,7 @@ Conversation = ConversationChain(
 if st.session_state.index is not None:
     user_input = get_text()
     if user_input:
-        response = st.session_state.index.search(user_input)
+        response = st.session_state.index.query(user_input)
         if response is not None:
             output = response
             st.session_state.past.append(user_input)  

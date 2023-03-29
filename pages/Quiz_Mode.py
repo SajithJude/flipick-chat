@@ -65,7 +65,7 @@ with st.sidebar.expander("🛠️ ", expanded=False):
     K = st.number_input(' (#)Summary of prompts to consider',min_value=3,max_value=1000)
     # Option to load an index
     if st.checkbox("Load Index"):
-        index_path = st.file_uploader("Select an index file", type="json")
+        index_path = st.text_input("Select an index file")
         if index_path is not None:
             st.session_state.index = GPTSimplevectorIndex(index_path)
 

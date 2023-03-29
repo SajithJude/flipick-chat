@@ -5,4 +5,3 @@ PyPDF2
 streamlit-chat
 langchain
 pinecone-client
-unstructured

@@ -21,7 +21,7 @@ st.write("")
 st.write("")
 
 # Get a list of all index files in the content directory
-index_files = glob.glob("content/*.json")
+index_files = glob.glob("*.json")
 
 if index_files:
     # If there are index files available, create a dropdown to select the index file to load

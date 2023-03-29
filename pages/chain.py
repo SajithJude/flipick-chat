@@ -5,23 +5,34 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 import pinecone
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
-
+import openai
 import os 
 import streamlit as st 
 
 
-loader = UnstructuredPDFLoader("content/Treasury Management Book .pdf")
-data = loader.load()
-st.write(f'You have {len(data)} document(s) in your data')
-st.write(f'There are {len(data[0].page_content)} characters in your document')
+# loader = UnstructuredPDFLoader("content/Treasury Management Book .pdf")
+# data = loader.load()
+# st.write(f'You have {len(data)} document(s) in your data')
+# st.write(f'There are {len(data[0].page_content)} characters in your document')
 
 
 
-text_splitter = RecursiveCharacterTextSplitter(
-  chunk_size=1000, chunk_overlap=0)
-texts = text_splitter.split_documents(data)
 
-st.write(f'Now you have {len(texts)} documents')
+# Check if the texts are already stored in the session state
+if 'texts' not in st.session_state:
+  # Load the data and split it into chunks
+  loader = UnstructuredPDFLoader("content/Treasury Management Book .pdf")
+  data = loader.load()
+  st.write(f'You have {len(data)} document(s) in your data')
+  st.write(f'There are {len(data[0].page_content)} characters in your document')
+
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+  texts = text_splitter.split_documents(data)
+  # Save the texts to the session state
+  st.session_state['texts'] = texts
+else:
+  # Load the texts from the session state
+  texts = st.session_state['texts']
 
 openai.api_key = os.getenv("API_KEY")
 

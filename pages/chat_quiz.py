@@ -38,7 +38,7 @@ if selected_file:
             "index_struct_type": "simple_dict",
             "query_mode": "default",
             "query_kwargs": {
-                "similarity_top_k": 1,
+                "similarity_top_k": 3,
                 # "include_summary": True
             },
             "query_transform": decompose_transform
@@ -62,22 +62,22 @@ if selected_file:
     # )
 
     # # define toolkit
-    # index_configs = []
+    index_configs = []
     # for pdf_file in content_dir.glob("*.pdf"):
-    #     file_name = pdf_file.stem
-    #     tool_config = IndexToolConfig(
-    #         index=index_set[file_name], 
-    #         name=f"Vector Index for {file_name}",
-    #         description=f"useful for when you want to answer queries about the {file_name} PDF file",
-    #         index_query_kwargs={"similarity_top_k": 3},
-    #         tool_kwargs={"return_direct": True}
-    #     )
-    #     # index_configs.append(tool_config)
+    indexfile = GPTSimpleVectorIndex.load_from_disk(selected_file)
+    tool_config = IndexToolConfig(
+        index=selected_file, 
+        name=f"Vector Index for {selected_file}",
+        description=f"useful for when you want to answer queries about the {file_name} PDF file",
+        index_query_kwargs={"similarity_top_k": 3},
+        tool_kwargs={"return_direct": True}
+    )
+        # index_configs.append(tool_config)
 
-    # index_configs.append(tool_config)
+    index_configs.append(tool_config)
 
     toolkit = LlamaToolkit(
-        index_configs=st.session_state.index_configs,
+        index_configs=index_configs,
         # graph_configs=[graph_config]
     )
 

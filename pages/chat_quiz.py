@@ -12,12 +12,12 @@ import os
 from llama_index.langchain_helpers.agents import LlamaToolkit, create_llama_chat_agent, IndexToolConfig, GraphToolConfig
 from llama_index.indices.query.query_transform.base import DecomposeQueryTransform
 openai.api_key = os.getenv("API_KEY")
-
+from pathlib import Path 
 
 # define an LLMPredictor set number of output tokens
 llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))
 service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
-
+content_dir = Path("content")
 json_files = list(content_dir.glob("*.json"))
 selected_file = st.selectbox("Select an Index file:", json_files)
 if selected_file:

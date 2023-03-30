@@ -100,15 +100,16 @@ graph_config = GraphToolConfig(
 
 # define toolkit
 index_configs = []
-for y in range(2019, 2023):
+for pdf_file in content_dir.glob("*.pdf"):
+    file_name = pdf_file.stem
     tool_config = IndexToolConfig(
-        index=index_set[y], 
-        name=f"Vector Index {y}",
-        description=f"useful for when you want to answer queries about the {y} SEC 10-K for Uber",
+        index=index_set[file_name], 
+        name=f"Vector Index for {file_name}",
+        description=f"useful for when you want to answer queries about the {file_name} PDF file",
         index_query_kwargs={"similarity_top_k": 3},
         tool_kwargs={"return_direct": True}
     )
-
+    # index_configs.append(tool_config)
 
 index_configs.append(tool_config)
 

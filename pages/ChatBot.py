@@ -114,20 +114,20 @@ for pdf_file in content_dir.glob("*.pdf"):
 index_configs.append(tool_config)
 
 
-toolkit = LlamaToolkit(
-      index_configs=index_configs,
-    graph_configs=[graph_config]
-)
+# toolkit = LlamaToolkit(
+#       index_configs=index_configs,
+#     graph_configs=[graph_config]
+# )
 
-memory = ConversationBufferMemory(memory_key="chat_history")
-llm=OpenAI(temperature=0)
-agent_chain = create_llama_chat_agent(
-    toolkit,
-    llm,
-    memory=memory,
-    verbose=True
-)
-inp = st.text_input("Enter query")
-if inp:
-    out = agent_chain.run(input=inp)
-    st.write(out)
+# memory = ConversationBufferMemory(memory_key="chat_history")
+# llm=OpenAI(temperature=0)
+# agent_chain = create_llama_chat_agent(
+#     toolkit,
+#     llm,
+#     memory=memory,
+#     verbose=True
+# )
+# inp = st.text_input("Enter query")
+# if inp:
+#     out = agent_chain.run(input=inp)
+#     st.write(out)

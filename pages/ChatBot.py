@@ -50,7 +50,7 @@ selected_files = st.multiselect("Select PDF files to create an index", options=[
 
 index_configs = []
 
-for pdf_file in pdf_selected_filesfiles:
+for pdf_file in selected_files:
     # if pdf_file.stem in selected_files:
     file_path = str(pdf_file.resolve())
     file_name = pdf_file.stem

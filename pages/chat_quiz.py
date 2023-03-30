@@ -23,8 +23,9 @@ content_dir = Path("content")
 
 json_files = list(main_dir.glob("*.json"))
 selected_file = st.selectbox("Select an Index file:", json_files)
-index_set = st.multiselect("select chapter indexes", json_files)
-if st.button("start"):
+
+
+if selected_file:
     graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
 
     decompose_transform = DecomposeQueryTransform(
@@ -60,25 +61,23 @@ if st.button("start"):
         tool_kwargs={"return_direct": True}
     )
 
-    # define toolkit
-    index_configs = []
-    file_ame = 0
-    for file_ame in index_set:
-        # file_name = pdf_file.stem
-        tool_config = IndexToolConfig(
-            index=index_set[file_ame], 
-            name=f"Vector Index for {file_ame}",
-            description=f"useful for when you want to answer queries about the {file_name} PDF file",
-            index_query_kwargs={"similarity_top_k": 3},
-            tool_kwargs={"return_direct": True}
-        )
-        file_ame+=1
-        # index_configs.append(tool_config)
+    # # define toolkit
+    # index_configs = []
+    # for pdf_file in content_dir.glob("*.pdf"):
+    #     file_name = pdf_file.stem
+    #     tool_config = IndexToolConfig(
+    #         index=index_set[file_name], 
+    #         name=f"Vector Index for {file_name}",
+    #         description=f"useful for when you want to answer queries about the {file_name} PDF file",
+    #         index_query_kwargs={"similarity_top_k": 3},
+    #         tool_kwargs={"return_direct": True}
+    #     )
+    #     # index_configs.append(tool_config)
 
-    index_configs.append(tool_config)
+    # index_configs.append(tool_config)
 
     toolkit = LlamaToolkit(
-        index_configs=index_configs,
+        index_configs=st.session_state.index_configs,
         graph_configs=[graph_config]
     )
 

@@ -113,7 +113,8 @@ for pdf_file in content_dir.glob("*.pdf"):
 
 index_configs.append(tool_config)
 
-
+if "index_configs" not in st.session_state:
+    st.session_state.index_configs = index_configs
 # toolkit = LlamaToolkit(
 #       index_configs=index_configs,
 #     graph_configs=[graph_config]

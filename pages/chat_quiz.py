@@ -62,8 +62,8 @@ if st.button("start"):
 
     # define toolkit
     index_configs = []
-    for pdf_file in index_set:
-        file_name = pdf_file.stem
+    for file_name in index_set:
+        # file_name = pdf_file.stem
         tool_config = IndexToolConfig(
             index=index_set[file_name], 
             name=f"Vector Index for {file_name}",

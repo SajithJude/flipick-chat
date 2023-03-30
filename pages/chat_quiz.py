@@ -23,7 +23,8 @@ content_dir = Path("content")
 
 json_files = list(main_dir.glob("*.json"))
 selected_file = st.selectbox("Select an Index file:", json_files)
-if selected_file:
+index_set = st.multiselect("select chapter indexes". json_files)
+if st.button("start"):
     graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
 
     decompose_transform = DecomposeQueryTransform(

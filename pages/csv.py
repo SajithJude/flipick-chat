@@ -8,7 +8,7 @@ PagedCSVReader = download_loader("PagedCSVReader")
 loader = PagedCSVReader()
 
 
-documents = loader.load_data(file=Path('./transactions.csv'))
+# documents = loader.load_data(file=Path('./transactions.csv'))
 
 uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
 if uploaded_file is not None:

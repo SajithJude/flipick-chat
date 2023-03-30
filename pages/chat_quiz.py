@@ -58,20 +58,6 @@ if selected_file:
         tool_kwargs={"return_direct": True}
     )
 
-    # # define toolkit
-    # index_configs = []
-    # # for pdf_file in content_dir.glob("*.pdf"):
-    # indexfile = GPTSimpleVectorIndex.load_from_disk(selected_file)
-    # tool_config = IndexToolConfig(
-    #     index=selected_file, 
-    #     name=f"Vector Index for {selected_file}",
-    #     description=f"useful for when you want to answer queries about the {selected_file} PDF file",
-    #     index_query_kwargs={"similarity_top_k": 3},
-    #     tool_kwargs={"return_direct": True}
-    # )
-        # index_configs.append(tool_config)
-
-    # index_configs.append(tool_config)
 
     toolkit = LlamaToolkit(
         graph_configs=[graph_config]

@@ -101,7 +101,7 @@ tool = LlamaIndexTool.from_tool_config(tool_config)
 Conversation = create_llama_chat_agent(
     tool,
     llm,
-    memory=memory,
+    memory=st.session_state.entity_memory,
     verbose=True
 )
 

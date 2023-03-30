@@ -11,7 +11,7 @@ uploaded_file = st.file_uploader('Upload a CSV file', type=['csv'])
 
 if uploaded_file is not None:
     # Save the file to the local directory
-    file_path = 'transactions.csv'
+    file_path = f'transactions.csv'
     with open(file_path, 'wb') as f:
         f.write(uploaded_file.read())
 

@@ -1,4 +1,4 @@
-from llama_index import GPTListIndex, LLMPredictor, ServiceContext
+from llama_index import GPTListIndex, GPTSimpleVectorIndex, LLMPredictor, ServiceContext
 from langchain import OpenAI
 from llama_index.indices.composability import ComposableGraph
 

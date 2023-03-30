@@ -58,9 +58,9 @@ index_configs = []
 for pdf_file in pdf_files:
     if pdf_file.stem in selected_files:
         index_summaries = [f"{pdf_file.stem}" for pdf_file in content_dir.glob("*.pdf")]
-        if "index_summaries" not in st.session_state:
-            st.session_state.index_summaries = index_summaries
-            st.success("Iindex_summaries saved to session memory")
+        # if "index_summaries" not in st.session_state:
+        st.session_state.index_summaries = index_summaries
+        st.success("Iindex_summaries saved to session memory")
 
         file_path = str(pdf_file.resolve())
         file_name = pdf_file.stem
@@ -159,9 +159,9 @@ query_configs = [
 # except NameError:
 #     st.warning("Upload PDF")
     
-if "index_configs" not in st.session_state:
-    st.session_state.index_configs = index_configs
-    st.success("Index config saved to session memory")
+# if "index_configs" not in st.session_state:
+#     st.session_state.index_configs = index_configs
+#     st.success("Index config saved to session memory")
 # toolkit = LlamaToolkit(
 #       index_configs=index_configs,
 #     graph_configs=[graph_config]

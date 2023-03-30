@@ -42,15 +42,7 @@ if selected_file:
                 # "include_summary": True
             },
             "query_transform": decompose_transform
-        },
-        {
-            "index_struct_type": "list",
-            "query_mode": "default",
-            "query_kwargs": {
-                "response_mode": "tree_summarize",
-                "verbose": True
-            }
-        },
+        }
     ]
     # graph config
     # graph_config = GraphToolConfig(

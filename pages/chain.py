@@ -8,7 +8,7 @@ from langchain.llms import OpenAI
 import os 
 from pathlib import Path
 from llama_index import download_loader, GPTSimpleVectorIndex
-
+llm = OpenAI(temperature=0)
 # Set Streamlit page configuration
 st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')
 # Initialize session states

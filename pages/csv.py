@@ -18,7 +18,10 @@ if uploaded_file is not None:
     # Load the data using the saved file
     with open(file_path, 'r', encoding='ISO-8859-1') as f:
         documents = loader.load_data(file=io.StringIO(f.read()))
+        
     index = GPTSimpleVectorIndex.from_documents(documents)
+    
     prompt = st.text_input("Enter your question")
-    ans = index.query(prompt)
-    st.write(ans)
+    if prompt:
+        ans = index.query(prompt)
+        st.write(ans)

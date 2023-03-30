@@ -89,20 +89,23 @@ documents1 = loader.load_data(file=Path('content/movie database.pdf'))
 index = GPTSimpleVectorIndex.from_documents(documents)
 index1 = GPTSimpleVectorIndex.from_documents(documents1)
 list_index=GPTListIndex.from_documents([documents,documents1])
+idnexconfig = []
+for i in range(2):
+        
+    tool_config = IndexToolConfig(
+        index=list_index[], 
+        name=f"Vector Index {i} ",
+        description=f"useful for when you want to answer queries about X",
+        index_query_kwargs={"similarity_top_k": 3},
+        tool_kwargs={"return_direct": True}
+    )
+    idnexconfig.append(tool_config)
 
-tool_config = IndexToolConfig(
-    index=list_index, 
-    name=f"Vector Index",
-    description=f"useful for when you want to answer queries about X",
-    index_query_kwargs={"similarity_top_k": 3},
-    tool_kwargs={"return_direct": True}
-)
-
-tool = LlamaIndexTool.from_tool_config(tool_config)
+# tool = LlamaIndexTool.from_tool_config(tool_config)
 
 
 toolkit = LlamaToolkit(
-    index_configs=tool_config,
+    index_configs=idnexconfig,
    
 )
 Conversation = create_llama_chat_agent(

@@ -40,94 +40,95 @@ if uploaded_files:
         index_set[uploaded_file.name] = cur_index
 
 # Choose PDFs to index
+
+    # Load selected PDFs into index_set and save indices
+    for pdf_file in content_dir.glob("*.pdf"):
+        if pdf_file.name in index_summaries:
+            file_name = pdf_file.stem
+            year_docs = loader.load_data(file=pdf_file, split_documents=False)
+            cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
+            index_set[file_name] = cur_index
+            cur_index.save_to_disk(f"index_{file_name}.json")
+            st.success(f"Index saved for {file_name}")
+
 index_summaries = st.multiselect("Select PDFs to index", [pdf_file.name for pdf_file in content_dir.glob("*.pdf")])
+if index_summaries:
 
-# Load selected PDFs into index_set and save indices
-for pdf_file in content_dir.glob("*.pdf"):
-    if pdf_file.name in index_summaries:
-        file_name = pdf_file.stem
-        year_docs = loader.load_data(file=pdf_file, split_documents=False)
-        cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
-        index_set[file_name] = cur_index
-        cur_index.save_to_disk(f"index_{file_name}.json")
-        st.success(f"Index saved for {file_name}")
+        # define an LLMPredictor set number of output tokens
+    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))
+    service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
 
-
-# define an LLMPredictor set number of output tokens
-llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))
-service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
-
-# define a list index over the vector indices
-# allows us to synthesize information across each index
-graph = ComposableGraph.from_indices(
-    GPTListIndex,
-    [index_set[file_name] for file_name in index_set], 
-    index_summaries=list(index_set.keys()),
-    service_context=service_context,
-)
+    # define a list index over the vector indices
+    # allows us to synthesize information across each index
+    graph = ComposableGraph.from_indices(
+        GPTListIndex,
+        [index_set[file_name] for file_name in index_set], 
+        index_summaries=list(index_set.keys()),
+        service_context=service_context,
+    )
 
 
-graph.save_to_disk("allIndexGraph.json")
-# [optional] load from disk, so you don't need to build graph from scratch
-graph = ComposableGraph.load_from_disk(
-    "allIndexGraph.json", 
-    service_context=service_context,
-)
+    graph.save_to_disk("allIndexGraph.json")
+    # [optional] load from disk, so you don't need to build graph from scratch
+    graph = ComposableGraph.load_from_disk(
+        "allIndexGraph.json", 
+        service_context=service_context,
+    )
 
-st.write(graph)
-# define a decompose transform
-decompose_transform = DecomposeQueryTransform(
-    llm_predictor, verbose=True
-)
+    st.write(graph)
+    # define a decompose transform
+    decompose_transform = DecomposeQueryTransform(
+        llm_predictor, verbose=True
+    )
 
 
 
-# define query configs for graph 
-query_configs = [
-    {
-        "index_struct_type": "simple_dict",
-        "query_mode": "default",
-        "query_kwargs": {
-            "similarity_top_k": 1,
-            # "include_summary": True
+    # define query configs for graph 
+    query_configs = [
+        {
+            "index_struct_type": "simple_dict",
+            "query_mode": "default",
+            "query_kwargs": {
+                "similarity_top_k": 1,
+                # "include_summary": True
+            },
+            "query_transform": decompose_transform
         },
-        "query_transform": decompose_transform
-    },
-    {
-        "index_struct_type": "list",
-        "query_mode": "default",
-        "query_kwargs": {
-            "response_mode": "tree_summarize",
-            "verbose": True
-        }
-    },
-]
-# graph config
-graph_config = GraphToolConfig(
-    graph=graph,
-    name=f"Graph Index",
-    description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
-    query_configs=query_configs,
-    tool_kwargs={"return_direct": True}
-)
-
-# define toolkit
-index_configs = []
-for pdf_file in content_dir.glob("*.pdf"):
-    file_name = pdf_file.stem
-    tool_config = IndexToolConfig(
-        index=index_set[file_name], 
-        name=f"Vector Index for {file_name}",
-        description=f"useful for when you want to answer queries about the {file_name} PDF file",
-        index_query_kwargs={"similarity_top_k": 3},
+        {
+            "index_struct_type": "list",
+            "query_mode": "default",
+            "query_kwargs": {
+                "response_mode": "tree_summarize",
+                "verbose": True
+            }
+        },
+    ]
+    # graph config
+    graph_config = GraphToolConfig(
+        graph=graph,
+        name=f"Graph Index",
+        description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+        query_configs=query_configs,
         tool_kwargs={"return_direct": True}
     )
-    # index_configs.append(tool_config)
 
-index_configs.append(tool_config)
+    # define toolkit
+    index_configs = []
+    for pdf_file in content_dir.glob("*.pdf"):
+        file_name = pdf_file.stem
+        tool_config = IndexToolConfig(
+            index=index_set[file_name], 
+            name=f"Vector Index for {file_name}",
+            description=f"useful for when you want to answer queries about the {file_name} PDF file",
+            index_query_kwargs={"similarity_top_k": 3},
+            tool_kwargs={"return_direct": True}
+        )
+        # index_configs.append(tool_config)
 
-if "index_configs" not in st.session_state:
-    st.session_state.index_configs = index_configs
+    index_configs.append(tool_config)
+
+    if "index_configs" not in st.session_state:
+        st.session_state.index_configs = index_configs
 # toolkit = LlamaToolkit(
 #       index_configs=index_configs,
 #     graph_configs=[graph_config]

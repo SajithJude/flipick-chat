@@ -26,7 +26,7 @@ selected_file = st.selectbox("Select an Index file:", json_files)
 
 
 if selected_file:
-    graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
+    # graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
 
     decompose_transform = DecomposeQueryTransform(
         llm_predictor, verbose=True

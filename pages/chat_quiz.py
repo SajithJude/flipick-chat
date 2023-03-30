@@ -13,6 +13,7 @@ from llama_index.langchain_helpers.agents import LlamaToolkit, create_llama_chat
 from llama_index.indices.query.query_transform.base import DecomposeQueryTransform
 openai.api_key = os.getenv("API_KEY")
 from pathlib import Path 
+import streamlit as st 
 
 # define an LLMPredictor set number of output tokens
 llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))

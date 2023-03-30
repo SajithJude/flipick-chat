@@ -120,22 +120,24 @@ query_configs = [
 #     query_configs=query_configs,
 #     tool_kwargs={"return_direct": True}
 # )
-
+try:
 # define toolkit
-index_configs = []
-for pdf_file in selected_files:
-    file_name = pdf_file.stem
-    tool_config = IndexToolConfig(
-        index=index_set[file_name], 
-        name=f"Vector Index for {file_name}",
-        description=f"useful for when you want to answer queries about the {file_name} PDF file",
-        index_query_kwargs={"similarity_top_k": 3},
-        tool_kwargs={"return_direct": True}
-    )
-    # index_configs.append(tool_config)
+    index_configs = []
+    for pdf_file in selected_files:
+        file_name = pdf_file.stem
+        tool_config = IndexToolConfig(
+            index=index_set[file_name], 
+            name=f"Vector Index for {file_name}",
+            description=f"useful for when you want to answer queries about the {file_name} PDF file",
+            index_query_kwargs={"similarity_top_k": 3},
+            tool_kwargs={"return_direct": True}
+        )
+        # index_configs.append(tool_config)
 
-index_configs.append(tool_config)
-
+    index_configs.append(tool_config)
+except NameError:
+    st.warning("Upload PDF")
+    
 if "index_configs" not in st.session_state:
     st.session_state.index_configs = index_configs
     st.success("Index config saved to session memory")

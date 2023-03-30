@@ -57,6 +57,11 @@ index_configs = []
 
 for pdf_file in pdf_files:
     if pdf_file.stem in selected_files:
+        index_summaries = [f"{pdf_file.stem}" for pdf_file in content_dir.glob("*.pdf")]
+        if "index_summaries" not in st.session_state:
+            st.session_state.index_summaries = index_summaries
+            st.success("Iindex_summaries saved to session memory")
+
         file_path = str(pdf_file.resolve())
         file_name = pdf_file.stem
         st.write(file_path)

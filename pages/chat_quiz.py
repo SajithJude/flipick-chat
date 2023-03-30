@@ -62,15 +62,17 @@ if st.button("start"):
 
     # define toolkit
     index_configs = []
-    for file_name in index_set:
+    file_ame = 0
+    for file_ame in index_set:
         # file_name = pdf_file.stem
         tool_config = IndexToolConfig(
-            index=index_set[file_name], 
-            name=f"Vector Index for {file_name}",
+            index=index_set[file_ame], 
+            name=f"Vector Index for {file_ame}",
             description=f"useful for when you want to answer queries about the {file_name} PDF file",
             index_query_kwargs={"similarity_top_k": 3},
             tool_kwargs={"return_direct": True}
         )
+        file_ame+=1
         # index_configs.append(tool_config)
 
     index_configs.append(tool_config)

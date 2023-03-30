@@ -98,7 +98,23 @@ graph_config = GraphToolConfig(
     tool_kwargs={"return_direct": True}
 )
 
+# define toolkit
+index_configs = []
+for y in range(2019, 2023):
+    tool_config = IndexToolConfig(
+        index=index_set[y], 
+        name=f"Vector Index {y}",
+        description=f"useful for when you want to answer queries about the {y} SEC 10-K for Uber",
+        index_query_kwargs={"similarity_top_k": 3},
+        tool_kwargs={"return_direct": True}
+    )
+
+
+index_configs.append(tool_config)
+
+
 toolkit = LlamaToolkit(
+    index_configs.append(tool_config),
     graph_configs=[graph_config]
 )
 

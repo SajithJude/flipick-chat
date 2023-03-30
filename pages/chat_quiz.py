@@ -18,7 +18,7 @@ import streamlit as st
 # define an LLMPredictor set number of output tokens
 llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))
 service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
-content_dir = Path("content")
+content_dir = Path("")
 json_files = list(content_dir.glob("*.json"))
 selected_file = st.selectbox("Select an Index file:", json_files)
 if selected_file:

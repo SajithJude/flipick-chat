@@ -64,7 +64,7 @@ if selected_file:
     # # define toolkit
     index_configs = []
     # for pdf_file in content_dir.glob("*.pdf"):
-    indexfile = GPTSimpleVectorIndex.load_from_disk(selected_file)
+    indexfile = GPTListIndex.load_from_disk(selected_file)
     tool_config = IndexToolConfig(
         index=selected_file, 
         name=f"Vector Index for {selected_file}",

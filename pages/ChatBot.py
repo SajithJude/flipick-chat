@@ -42,6 +42,7 @@ loader = UnstructuredReader()
 service_context = ServiceContext.from_defaults(chunk_size_limit=512)
 index_set = {}
 
+content_dir = Path("content")
 pdf_files = list(content_dir.glob("*.pdf"))
 
 # Display the multi-select input for users to select PDF files

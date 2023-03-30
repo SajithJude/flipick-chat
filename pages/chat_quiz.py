@@ -22,7 +22,7 @@ main_dir = Path("")
 content_dir = Path("content")
 
 json_files = list(main_dir.glob("*.json"))
-multiselected_file = st.multiselect("Select an Index file:", json_files)
+multiselected_file = st.selectbox("Select an Index file:", json_files)
 
 
 if multiselected_file:

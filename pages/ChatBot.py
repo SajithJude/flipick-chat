@@ -27,20 +27,31 @@ loader = UnstructuredReader()
 service_context = ServiceContext.from_defaults(chunk_size_limit=512)
 index_set = {}
 content_dir = Path("content")
+
+# Upload PDFs
+uploaded_files = st.file_uploader("Upload PDFs", type=["pdf"], accept_multiple_files=True)
+
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        with open(uploaded_file.name, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        year_docs = loader.load_data(file=Path(uploaded_file.name), split_documents=False)
+        cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
+        index_set[uploaded_file.name] = cur_index
+
+# Choose PDFs to index
+index_summaries = st.multiselect("Select PDFs to index", [pdf_file.name for pdf_file in content_dir.glob("*.pdf")])
+
+# Load selected PDFs into index_set and save indices
 for pdf_file in content_dir.glob("*.pdf"):
-    file_path = str(pdf_file.resolve())
-    file_name = pdf_file.stem
-    st.write(file_path)
-    year_docs = loader.load_data(file=Path(file_path), split_documents=False)
-    cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
-    index_set[file_name] = cur_index
-    cur_index.save_to_disk(f'index_{file_name}.json')
-    st.success("index saved for "+ file_name)
+    if pdf_file.name in index_summaries:
+        file_name = pdf_file.stem
+        year_docs = loader.load_data(file=pdf_file, split_documents=False)
+        cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
+        index_set[file_name] = cur_index
+        cur_index.save_to_disk(f"index_{file_name}.json")
+        st.success(f"Index saved for {file_name}")
 
-
-
-
-index_summaries = [f"{pdf_file.stem}" for pdf_file in content_dir.glob("*.pdf")]
 
 # define an LLMPredictor set number of output tokens
 llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))
@@ -50,16 +61,16 @@ service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
 # allows us to synthesize information across each index
 graph = ComposableGraph.from_indices(
     GPTListIndex,
-    [index_set[file.stem] for file in content_dir.glob("*.pdf")], 
-    index_summaries=index_summaries,
+    [index_set[file_name] for file_name in index_set], 
+    index_summaries=list(index_set.keys()),
     service_context=service_context,
 )
 
 
-graph.save_to_disk('allIndexGraph.json')
+graph.save_to_disk("allIndexGraph.json")
 # [optional] load from disk, so you don't need to build graph from scratch
 graph = ComposableGraph.load_from_disk(
-    'allIndexGraph.json', 
+    "allIndexGraph.json", 
     service_context=service_context,
 )
 
@@ -68,6 +79,8 @@ st.write(graph)
 decompose_transform = DecomposeQueryTransform(
     llm_predictor, verbose=True
 )
+
+
 
 # define query configs for graph 
 query_configs = [

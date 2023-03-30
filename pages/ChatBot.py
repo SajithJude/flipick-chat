@@ -71,22 +71,22 @@ service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor)
 
 # define a list index over the vector indices
 # allows us to synthesize information across each index
-graph = ComposableGraph.from_indices(
-    GPTListIndex,
-    [index_set[file.stem] for file in content_dir.glob("*.pdf")], 
-    index_summaries=index_summaries,
-    service_context=service_context,
-)
+# graph = ComposableGraph.from_indices(
+#     GPTListIndex,
+#     [index_set[file.stem] for file in content_dir.glob("*.pdf")], 
+#     index_summaries=index_summaries,
+#     service_context=service_context,
+# )
 
 
-graph.save_to_disk('allIndexGraph.json')
-# [optional] load from disk, so you don't need to build graph from scratch
-graph = ComposableGraph.load_from_disk(
-    'allIndexGraph.json', 
-    service_context=service_context,
-)
+# graph.save_to_disk('allIndexGraph.json')
+# # [optional] load from disk, so you don't need to build graph from scratch
+# graph = ComposableGraph.load_from_disk(
+#     'allIndexGraph.json', 
+#     service_context=service_context,
+# )
 
-st.write(graph)
+# st.write(graph)
 # define a decompose transform
 decompose_transform = DecomposeQueryTransform(
     llm_predictor, verbose=True
@@ -113,13 +113,13 @@ query_configs = [
     },
 ]
 # graph config
-graph_config = GraphToolConfig(
-    graph=graph,
-    name=f"Graph Index",
-    description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
-    query_configs=query_configs,
-    tool_kwargs={"return_direct": True}
-)
+# graph_config = GraphToolConfig(
+#     graph=graph,
+#     name=f"Graph Index",
+#     description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+#     query_configs=query_configs,
+#     tool_kwargs={"return_direct": True}
+# )
 
 # define toolkit
 index_configs = []
@@ -138,6 +138,7 @@ index_configs.append(tool_config)
 
 if "index_configs" not in st.session_state:
     st.session_state.index_configs = index_configs
+    st.success("Index config saved to session memory")
 # toolkit = LlamaToolkit(
 #       index_configs=index_configs,
 #     graph_configs=[graph_config]

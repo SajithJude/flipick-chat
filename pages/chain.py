@@ -130,7 +130,7 @@ user_input = get_text()
 if user_input:
     # query_vector = index.encode_text(user_input)
     
-    output = Conversation.run(input=response)  
+    output = Conversation.run(input=user_input)  
     st.session_state.past.append(user_input)  
     st.session_state.generated.append(output)  
 

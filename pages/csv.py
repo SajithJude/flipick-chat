@@ -2,7 +2,7 @@ from pathlib import Path
 from llama_index import download_loader
 import streamlit as st
 import io
-
+from llama_index import GPTSimpleVectorIndex
 PandasCSVReader = download_loader("PandasCSVReader")
 
 loader = PandasCSVReader()

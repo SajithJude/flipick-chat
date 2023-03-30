@@ -82,14 +82,16 @@ st.title("🤖 Chat Bot with 🧠")
 
 PDFReader = download_loader("PDFReader")
 loader = PDFReader()
-documents = loader.load_data(file=Path('content/movie database.pdf'))
+documents = loader.load_data(file=Path('content/movie database (1).pdf'))
+documents1 = loader.load_data(file=Path('content/movie database.pdf'))
+
 # Convert PDF to text
 index = GPTSimpleVectorIndex.from_documents(documents)
-
-
+index1 = GPTSimpleVectorIndex.from_documents(documents1)
+list_index=GPTListIndex([documents,documents1])
 
 tool_config = IndexToolConfig(
-    index=index, 
+    index=list_index, 
     name=f"Vector Index",
     description=f"useful for when you want to answer queries about X",
     index_query_kwargs={"similarity_top_k": 3},

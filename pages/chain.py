@@ -8,6 +8,14 @@ from langchain.llms import OpenAI
 import os 
 from pathlib import Path
 from llama_index import download_loader, GPTSimpleVectorIndex
+from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool
+from gpt_index.langchain_helpers.agents import create_llama_chat_agent
+
+
+
+
+
+
 llm = OpenAI(temperature=0)
 # Set Streamlit page configuration
 st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')
@@ -73,27 +81,43 @@ st.title("🤖 Chat Bot with 🧠")
 
 
 PDFReader = download_loader("PDFReader")
-
 loader = PDFReader()
 documents = loader.load_data(file=Path('content/movie database.pdf'))
-
 # Convert PDF to text
 index = GPTSimpleVectorIndex.from_documents(documents)
 
-# # Convert text to vectors and add to index
-# vectors = index.encode_text(text)
-# index.add_vectors(vectors)
+
+
+tool_config = IndexToolConfig(
+    index=index, 
+    name=f"Vector Index",
+    description=f"useful for when you want to answer queries about X",
+    index_query_kwargs={"similarity_top_k": 3},
+    tool_kwargs={"return_direct": True}
+)
+
+tool = LlamaIndexTool.from_tool_config(tool_config)
+
+Conversation = create_llama_chat_agent(
+    tool,
+    llm,
+    memory=memory,
+    verbose=True
+)
+
+# Conversation.run(input="Query about X")
+
 
 # Create a ConversationEntityMemory object if not already created
 if 'entity_memory' not in st.session_state:
-        st.session_state.entity_memory = ConversationEntityMemory(llm=index, k=K )
+        st.session_state.entity_memory = memory
     
     # Create the ConversationChain object with the specified configuration
-Conversation = ConversationChain(
-        llm=index, 
-        prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
-        memory=st.session_state.entity_memory
-    )
+# Conversation = ConversationChain(
+#         llm=index, 
+#         prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+#         memory=st.session_state.entity_memory
+#     )
 
 
 # Add a button to start a new chat
@@ -105,10 +129,7 @@ user_input = get_text()
 # Generate the output using the ConversationChain object and the user input, and add the input/output to the session
 if user_input:
     # query_vector = index.encode_text(user_input)
-    results = index.query(user_input)
-    response = ''
-    for result in results:
-        response += index.texts[result[0]] + '\n'
+    
     output = Conversation.run(input=response)  
     st.session_state.past.append(user_input)  
     st.session_state.generated.append(output)  

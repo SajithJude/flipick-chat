@@ -1,67 +1,139 @@
-from langchain.document_loaders import UnstructuredPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma, Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
-import pinecone
-from langchain.llms import OpenAI
-from langchain.chains.question_answering import load_qa_chain
-import openai
-import os
+
+# Import necessary libraries
 import streamlit as st
+from langchain.chains import ConversationChain
+from langchain.chains.conversation.memory import ConversationEntityMemory
+from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
+from langchain.llms import OpenAI
+import os 
 
-# Load the data and split it into chunks
-@st.cache
-def load_and_split_data():
-    loader = UnstructuredPDFLoader("content/Treasury Management Book .pdf")
-    data = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.split_documents(data)
-    return texts
+# Set Streamlit page configuration
+st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')
+# Initialize session states
+if "generated" not in st.session_state:
+    st.session_state["generated"] = []
+if "past" not in st.session_state:
+    st.session_state["past"] = []
+if "input" not in st.session_state:
+    st.session_state["input"] = ""
+if "stored_session" not in st.session_state:
+    st.session_state["stored_session"] = []
 
-texts = load_and_split_data()
+# Define function to get user input
+def get_text():
+    """
+    Get the user input text.
 
-openai.api_key = os.getenv("API_KEY")
+    Returns:
+        (str): The text entered by the user
+    """
+    input_text = st.text_input("You: ", st.session_state["input"], key="input",
+                            placeholder="Your AI assistant here! Ask me anything ...", 
+                            label_visibility='hidden')
+    return input_text
 
-# Embeddings and Pinecone index
-@st.cache(allow_output_mutation=True, suppress_st_warning=True)
-def prepare_embeddings_and_pinecone_index():
-    embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
-    pinecone.init(
-        api_key="ef6b0907-1e0f-4b7e-a99d-b893c5686680",
-        environment="eu-west1-gcp"
+# Define function to start a new chat
+def new_chat():
+    """
+    Clears session state and starts a new chat.
+    """
+    save = []
+    for i in range(len(st.session_state['generated'])-1, -1, -1):
+        save.append("User:" + st.session_state["past"][i])
+        save.append("Bot:" + st.session_state["generated"][i])        
+    st.session_state["stored_session"].append(save)
+    st.session_state["generated"] = []
+    st.session_state["past"] = []
+    st.session_state["input"] = ""
+    st.session_state.entity_memory.store = {}
+    st.session_state.entity_memory.buffer.clear()
+
+# Set up sidebar with various options
+with st.sidebar.expander("🛠️ ", expanded=False):
+    # Option to preview memory store
+    if st.checkbox("Preview memory store"):
+        with st.expander("Memory-Store", expanded=False):
+            st.session_state.entity_memory.store
+    # Option to preview memory buffer
+    if st.checkbox("Preview memory buffer"):
+        with st.expander("Bufffer-Store", expanded=False):
+            st.session_state.entity_memory.buffer
+    MODEL = st.selectbox(label='Model', options=['gpt-3.5-turbo','text-davinci-003','text-davinci-002','code-davinci-002'])
+    K = st.number_input(' (#)Summary of prompts to consider',min_value=3,max_value=1000)
+
+# Set up the Streamlit app layout
+st.title("🤖 Chat Bot with 🧠")
+# st.subheader(" Powered by 🦜 LangChain + OpenAI + Streamlit")
+
+import PyPDF2
+from llama import GPTSimpleVectorIndex
+
+# Convert PDF to text
+pdf_file = open(f'content/movie database.pdf', 'rb')
+pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+text = ''
+for page in pdf_reader.pages:
+    text += page.extract_text()
+
+# Create GPTSimpleVectorIndex
+vector_size = 512
+index = GPTSimpleVectorIndex(vector_size)
+
+# Convert text to vectors and add to index
+vectors = index.encode_text(text)
+index.add_vectors(vectors)
+
+# Create a ConversationEntityMemory object if not already created
+if 'entity_memory' not in st.session_state:
+        st.session_state.entity_memory = ConversationEntityMemory(index=index, k=K )
+    
+    # Create the ConversationChain object with the specified configuration
+Conversation = ConversationChain(
+        index=index, 
+        prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+        memory=st.session_state.entity_memory
     )
-    index_name = "langchain-openai"
-    namespace = "book"
-    docsearch = Pinecone.from_texts(
-        [t.page_content for t in texts], embeddings,
-        index_name=index_name, namespace=namespace
-    )
-    return embeddings, docsearch
-
-embeddings, docsearch = prepare_embeddings_and_pinecone_index()
-
-llm = OpenAI(temperature=0, openai_api_key=openai.api_key)
-chain = load_qa_chain(llm, chain_type="stuff")
 
 
-index_name = "langchain-openai"
-namespace = "book"
-# Initialize conversation history
-if 'conversation_history' not in st.session_state:
-    st.session_state.conversation_history = []
+# Add a button to start a new chat
+st.sidebar.button("New Chat", on_click = new_chat, type='primary')
 
-query = st.text_input("Input question")
-if query:
-    # Add user query to the conversation history
-    st.session_state.conversation_history.append(f"User: {query}")
+# Get the user input
+user_input = get_text()
 
-    docs = docsearch.similarity_search(query,
-                                       include_metadata=True, namespace=namespace)
+# Generate the output using the ConversationChain object and the user input, and add the input/output to the session
+if user_input:
+    query_vector = index.encode_text(user_input)
+    results = index.query(query_vector, k=5)
+    response = ''
+    for result in results:
+        response += index.texts[result[0]] + '\n'
+    output = Conversation.run(input=response)  
+    st.session_state.past.append(user_input)  
+    st.session_state.generated.append(output)  
 
-    conversation_input = ' '.join(st.session_state.conversation_history)
-    answer = chain.run(input_documents=docs, question=conversation_input)
 
-    # Add model response to the conversation history
-    st.session_state.conversation_history.append(f"Assistant: {answer}")
+# Allow to download as well
+download_str = []
+# Display the conversation history using an expander, and allow the user to download it
+with st.expander("Conversation", expanded=True):
+    for i in range(len(st.session_state['generated'])-1, -1, -1):
+        st.info(st.session_state["past"][i],icon="🧐")
+        st.success(st.session_state["generated"][i], icon="🤖")
+        download_str.append(st.session_state["past"][i])
+        download_str.append(st.session_state["generated"][i])
+    
+    # Can throw error - requires fix
+    download_str = '\n'.join(download_str)
+    if download_str:
+        st.download_button('Download',download_str)
 
-    st.write(answer)
+# Display stored conversation sessions in the sidebar
+for i, sublist in enumerate(st.session_state.stored_session):
+        with st.sidebar.expander(label= f"Conversation-Session:{i}"):
+            st.write(sublist)
+
+# Allow the user to clear all stored conversation sessions
+if st.session_state.stored_session:   
+    if st.sidebar.checkbox("Clear-all"):
+        del st.session_state.stored_session

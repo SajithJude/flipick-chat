@@ -93,7 +93,7 @@ idnexconfig = []
 for i in range(2):
         
     tool_config = IndexToolConfig(
-        index=list_index[], 
+        index=list_index[i], 
         name=f"Vector Index {i} ",
         description=f"useful for when you want to answer queries about X",
         index_query_kwargs={"similarity_top_k": 3},

@@ -22,14 +22,14 @@ main_dir = Path("")
 content_dir = Path("content")
 
 json_files = list(main_dir.glob("*.json"))
-selected_file = st.multiselect("Select an Index file:", json_files)
+multiselected_file = st.multiselect("Select an Index file:", json_files)
 
 
-if selected_file:
-    # graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
+if multiselected_file:
+    index = GPTSimpleVectorIndex.load_from_disk(multiselected_file, service_context=service_context)
     graph = ComposableGraph.from_indices(
     GPTListIndex,
-    selected_file,
+    multiselected_file,
     index_summaries=st.session_state.index_summaries,
 )
 

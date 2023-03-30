@@ -74,9 +74,9 @@ for pdf_file in pdf_files:
     # for pdf_file in selected_files:
         # file_name = pdf_file.stem
         tool_config = IndexToolConfig(
-            index=index_set[file_name], 
-            name=f"Vector Index for {file_name}",
-            description=f"useful for when you want to answer queries about the {file_name} PDF file",
+            index=cur_index, 
+            name=f"Vector Index for {cur_index}",
+            description=f"useful for when you want to answer queries about the {cur_index} PDF file",
             index_query_kwargs={"similarity_top_k": 3},
             tool_kwargs={"return_direct": True}
         )

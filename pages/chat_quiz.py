@@ -26,7 +26,7 @@ multiselected_file = st.multiselect("Select an Index file:", json_files)
 
 
 if multiselected_file:
-    index = GPTSimpleVectorIndex.load_from_disk(multiselected_file, service_context=service_context)
+    index = GPTSimpleVectorIndex.load_from_disk(Path("content/"+multiselected_file), service_context=service_context)
     graph = ComposableGraph.from_indices(
     GPTListIndex,
     multiselected_file,

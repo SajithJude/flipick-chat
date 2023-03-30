@@ -115,7 +115,7 @@ index_configs.append(tool_config)
 
 
 toolkit = LlamaToolkit(
-    index_configs.append(tool_config),
+      index_configs=index_configs,
     graph_configs=[graph_config]
 )
 

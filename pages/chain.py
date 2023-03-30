@@ -86,7 +86,7 @@ index = GPTSimpleVectorIndex.from_documents(documents)
 
 # Create a ConversationEntityMemory object if not already created
 if 'entity_memory' not in st.session_state:
-        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, index=index, k=K )
+        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K )
     
     # Create the ConversationChain object with the specified configuration
 Conversation = ConversationChain(
@@ -104,8 +104,8 @@ user_input = get_text()
 
 # Generate the output using the ConversationChain object and the user input, and add the input/output to the session
 if user_input:
-    query_vector = index.encode_text(user_input)
-    results = index.query(query_vector, k=5)
+    # query_vector = index.encode_text(user_input)
+    results = index.query(user_input)
     response = ''
     for result in results:
         response += index.texts[result[0]] + '\n'

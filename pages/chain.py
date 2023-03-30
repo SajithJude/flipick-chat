@@ -98,8 +98,13 @@ tool_config = IndexToolConfig(
 
 tool = LlamaIndexTool.from_tool_config(tool_config)
 
+
+toolkit = LlamaToolkit(
+    index_configs=tool_config,
+   
+)
 Conversation = create_llama_chat_agent(
-    tool,
+    toolkit,
     llm,
     memory=st.session_state.entity_memory,
     verbose=True

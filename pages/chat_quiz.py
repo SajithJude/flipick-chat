@@ -68,7 +68,7 @@ if selected_file:
     tool_config = IndexToolConfig(
         index=selected_file, 
         name=f"Vector Index for {selected_file}",
-        description=f"useful for when you want to answer queries about the {file_name} PDF file",
+        description=f"useful for when you want to answer queries about the {selected_file} PDF file",
         index_query_kwargs={"similarity_top_k": 3},
         tool_kwargs={"return_direct": True}
     )

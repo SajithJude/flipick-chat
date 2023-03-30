@@ -27,11 +27,11 @@ multiselected_file = st.selectbox("Select an Index file:", json_files)
 
 if multiselected_file:
     index = GPTSimpleVectorIndex.load_from_disk(os.path.join(main_dir, multiselected_file))
-    graph = ComposableGraph.from_indices(
-    GPTListIndex,
-    multiselected_file,
-    index_summaries=st.session_state.index_summaries,
-)
+#     graph = ComposableGraph.from_indices(
+#     GPTListIndex,
+#     multiselected_file,
+#     index_summaries=st.session_state.index_summaries,
+# )
 
     decompose_transform = DecomposeQueryTransform(
         llm_predictor, verbose=True
@@ -50,17 +50,16 @@ if multiselected_file:
         }
     ]
     # graph config
-    graph_config = GraphToolConfig(
-        graph=graph,
-        name=f"Graph Index",
-        description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
-        query_configs=query_configs,
+    config = IndexToolConfig(
+        index=index,
+        name="My GPTSimpleVectorIndex",
+        description="An index of some test data",
+        index_query_kwargs={"similarity_top_k": 3},
         tool_kwargs={"return_direct": True}
     )
 
-
     toolkit = LlamaToolkit(
-        graph_configs=[graph_config]
+       index_configs=index_configs,
     )
 
     memory = ConversationBufferMemory(memory_key="chat_history")

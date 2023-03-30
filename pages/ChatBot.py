@@ -50,26 +50,26 @@ selected_files = st.multiselect("Select PDF files to create an index", options=[
 
 index_configs = []
 
-for pdf_file in pdf_files:
-    if pdf_file.stem in selected_files:
-        file_path = str(pdf_file.resolve())
-        file_name = pdf_file.stem
-        st.write(file_path)
-        year_docs = loader.load_data(file=Path(file_path), split_documents=False)
-        cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
-        index_set[file_name] = cur_index
-        cur_index.save_to_disk(f'index_{file_name}.json')
-        st.success("index saved for "+ file_name)
+for pdf_file in pdf_selected_filesfiles:
+    # if pdf_file.stem in selected_files:
+    file_path = str(pdf_file.resolve())
+    file_name = pdf_file.stem
+    st.write(file_path)
+    year_docs = loader.load_data(file=Path(file_path), split_documents=False)
+    cur_index = GPTSimpleVectorIndex.from_documents(year_docs, service_context=service_context)
+    index_set[file_name] = cur_index
+    cur_index.save_to_disk(f'index_{file_name}.json')
+    st.success("index saved for "+ file_name)
 
-    # for pdf_file in selected_files:
-        # file_name = pdf_file.stem
-        tool_config = IndexToolConfig(
-            index=index_set[file_name], 
-            name=f"Vector Index for {file_name}",
-            description=f"useful for when you want to answer queries about the {file_name} PDF file",
-            index_query_kwargs={"similarity_top_k": 3},
-            tool_kwargs={"return_direct": True}
-        )
+# for pdf_file in selected_files:
+    # file_name = pdf_file.stem
+    tool_config = IndexToolConfig(
+        index=index_set[file_name], 
+        name=f"Vector Index for {file_name}",
+        description=f"useful for when you want to answer queries about the {file_name} PDF file",
+        index_query_kwargs={"similarity_top_k": 3},
+        tool_kwargs={"return_direct": True}
+    )
         # index_configs.append(tool_config)
 
     # index_configs.append(tool_config)

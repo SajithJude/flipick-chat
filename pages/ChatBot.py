@@ -63,7 +63,7 @@ for pdf_file in pdf_files:
 
 
 
-index_summaries = [f"{pdf_file.stem}" for pdf_file in content_dir.glob("*.pdf")]
+index_summaries  = selected_files
 
 # define an LLMPredictor set number of output tokens
 llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))

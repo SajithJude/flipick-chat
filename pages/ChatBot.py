@@ -123,7 +123,7 @@ query_configs = [
 
 # define toolkit
 index_configs = []
-for pdf_file in content_dir.glob("*.pdf"):
+for pdf_file in selected_files:
     file_name = pdf_file.stem
     tool_config = IndexToolConfig(
         index=index_set[file_name], 

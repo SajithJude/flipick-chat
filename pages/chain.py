@@ -8,7 +8,7 @@ from langchain.llms import OpenAI
 import os 
 from pathlib import Path
 from llama_index import download_loader, GPTSimpleVectorIndex
-from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool
+from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool,LlamaToolkit
 from llama_index.langchain_helpers.agents import create_llama_chat_agent
 
 

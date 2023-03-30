@@ -7,7 +7,7 @@ from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMP
 from langchain.llms import OpenAI
 import os 
 from pathlib import Path
-from llama_index import download_loader
+from llama_index import download_loader, GPTSimpleVectorIndex
 
 # Set Streamlit page configuration
 st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')

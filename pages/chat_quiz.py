@@ -24,71 +24,71 @@ selected_file = st.selectbox("Select an Index file:", json_files)
 if selected_file:
     graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
 
-decompose_transform = DecomposeQueryTransform(
-    llm_predictor, verbose=True
-)
+    decompose_transform = DecomposeQueryTransform(
+        llm_predictor, verbose=True
+    )
 
-# define query configs for graph 
-query_configs = [
-    {
-        "index_struct_type": "simple_dict",
-        "query_mode": "default",
-        "query_kwargs": {
-            "similarity_top_k": 1,
-            # "include_summary": True
+    # define query configs for graph 
+    query_configs = [
+        {
+            "index_struct_type": "simple_dict",
+            "query_mode": "default",
+            "query_kwargs": {
+                "similarity_top_k": 1,
+                # "include_summary": True
+            },
+            "query_transform": decompose_transform
         },
-        "query_transform": decompose_transform
-    },
-    {
-        "index_struct_type": "list",
-        "query_mode": "default",
-        "query_kwargs": {
-            "response_mode": "tree_summarize",
-            "verbose": True
-        }
-    },
-]
-# graph config
-graph_config = GraphToolConfig(
-    graph=graph,
-    name=f"Graph Index",
-    description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
-    query_configs=query_configs,
-    tool_kwargs={"return_direct": True}
-)
-
-# define toolkit
-index_configs = []
-for pdf_file in content_dir.glob("*.pdf"):
-    file_name = pdf_file.stem
-    tool_config = IndexToolConfig(
-        index=index_set[file_name], 
-        name=f"Vector Index for {file_name}",
-        description=f"useful for when you want to answer queries about the {file_name} PDF file",
-        index_query_kwargs={"similarity_top_k": 3},
+        {
+            "index_struct_type": "list",
+            "query_mode": "default",
+            "query_kwargs": {
+                "response_mode": "tree_summarize",
+                "verbose": True
+            }
+        },
+    ]
+    # graph config
+    graph_config = GraphToolConfig(
+        graph=graph,
+        name=f"Graph Index",
+        description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+        query_configs=query_configs,
         tool_kwargs={"return_direct": True}
     )
-    # index_configs.append(tool_config)
 
-index_configs.append(tool_config)
+    # define toolkit
+    index_configs = []
+    for pdf_file in content_dir.glob("*.pdf"):
+        file_name = pdf_file.stem
+        tool_config = IndexToolConfig(
+            index=index_set[file_name], 
+            name=f"Vector Index for {file_name}",
+            description=f"useful for when you want to answer queries about the {file_name} PDF file",
+            index_query_kwargs={"similarity_top_k": 3},
+            tool_kwargs={"return_direct": True}
+        )
+        # index_configs.append(tool_config)
 
-toolkit = LlamaToolkit(
-      index_configs=index_configs,
-    graph_configs=[graph_config]
-)
+    index_configs.append(tool_config)
 
-memory = ConversationBufferMemory(memory_key="chat_history")
-llm=OpenAI(temperature=0)
-agent_chain = create_llama_chat_agent(
-    toolkit,
-    llm,
-    memory=memory,
-    verbose=True
-)
+    toolkit = LlamaToolkit(
+        index_configs=index_configs,
+        graph_configs=[graph_config]
+    )
+
+    memory = ConversationBufferMemory(memory_key="chat_history")
+    llm=OpenAI(temperature=0)
+    agent_chain = create_llama_chat_agent(
+        toolkit,
+        llm,
+        memory=memory,
+        verbose=True
+    )
 
 
 
-inp = st.text_input("Enter query")
-if inp:
-    out = agent_chain.run(input=inp)
-    st.write(out)
+    inp = st.text_input("Enter query")
+    if inp:
+        out = agent_chain.run(input=inp)
+        st.write(out)

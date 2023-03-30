@@ -86,11 +86,11 @@ index = GPTSimpleVectorIndex.from_documents(documents)
 
 # Create a ConversationEntityMemory object if not already created
 if 'entity_memory' not in st.session_state:
-        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K )
+        st.session_state.entity_memory = ConversationEntityMemory(llm=index, k=K )
     
     # Create the ConversationChain object with the specified configuration
 Conversation = ConversationChain(
-        index=index, 
+        llm=index, 
         prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
         memory=st.session_state.entity_memory
     )

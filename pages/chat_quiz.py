@@ -22,11 +22,16 @@ main_dir = Path("")
 content_dir = Path("content")
 
 json_files = list(main_dir.glob("*.json"))
-selected_file = st.selectbox("Select an Index file:", json_files)
+selected_file = st.multiselect("Select an Index file:", json_files)
 
 
 if selected_file:
     # graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
+    graph = ComposableGraph.build_from_indices(
+    GPTListIndex,
+    selected_file,
+    index_summaries=st.session_state.index_summaries,
+)
 
     decompose_transform = DecomposeQueryTransform(
         llm_predictor, verbose=True
@@ -45,32 +50,31 @@ if selected_file:
         }
     ]
     # graph config
-    # graph_config = GraphToolConfig(
-    #     graph=graph,
-    #     name=f"Graph Index",
-    #     description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
-    #     query_configs=query_configs,
-    #     tool_kwargs={"return_direct": True}
-    # )
-
-    # # define toolkit
-    index_configs = []
-    # for pdf_file in content_dir.glob("*.pdf"):
-    indexfile = GPTListIndex.load_from_disk(selected_file)
-    tool_config = IndexToolConfig(
-        index=selected_file, 
-        name=f"Vector Index for {selected_file}",
-        description=f"useful for when you want to answer queries about the {selected_file} PDF file",
-        index_query_kwargs={"similarity_top_k": 3},
+    graph_config = GraphToolConfig(
+        graph=graph,
+        name=f"Graph Index",
+        description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+        query_configs=query_configs,
         tool_kwargs={"return_direct": True}
     )
+
+    # # define toolkit
+    # index_configs = []
+    # # for pdf_file in content_dir.glob("*.pdf"):
+    # indexfile = GPTSimpleVectorIndex.load_from_disk(selected_file)
+    # tool_config = IndexToolConfig(
+    #     index=selected_file, 
+    #     name=f"Vector Index for {selected_file}",
+    #     description=f"useful for when you want to answer queries about the {selected_file} PDF file",
+    #     index_query_kwargs={"similarity_top_k": 3},
+    #     tool_kwargs={"return_direct": True}
+    # )
         # index_configs.append(tool_config)
 
-    index_configs.append(tool_config)
+    # index_configs.append(tool_config)
 
     toolkit = LlamaToolkit(
-        index_configs=index_configs,
-        # graph_configs=[graph_config]
+        graph_configs=[graph_config]
     )
 
     memory = ConversationBufferMemory(memory_key="chat_history")

@@ -76,8 +76,10 @@ for pdf_file in pdf_files:
 
 
 
-
-index_summaries  = selected_files
+    index_summaries = [f"{pdf_file.stem}" for pdf_file in content_dir.glob("*.pdf")]
+    if "index_summaries" not in st.session_state:
+        st.session_state.index_summaries = index_summaries
+        st.success("Index_summaries saved to session memory")
 
 # define an LLMPredictor set number of output tokens
 llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, max_tokens=512))

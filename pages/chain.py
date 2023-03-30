@@ -6,6 +6,8 @@ from langchain.chains.conversation.memory import ConversationEntityMemory
 from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 from langchain.llms import OpenAI
 import os 
+from pathlib import Path
+from gpt_index import download_loader
 
 # Set Streamlit page configuration
 st.set_page_config(page_title='🧠MemoryBot🤖', layout='wide')
@@ -65,23 +67,22 @@ with st.sidebar.expander("🛠️ ", expanded=False):
 st.title("🤖 Chat Bot with 🧠")
 # st.subheader(" Powered by 🦜 LangChain + OpenAI + Streamlit")
 
-import PyPDF2
-from llama import GPTSimpleVectorIndex
+# import PyPDF2
+# from llama-index import GPTSimpleVectorIndex
+
+
+
+PDFReader = download_loader("PDFReader")
+
+loader = PDFReader()
+documents = loader.load_data(file=Path('content/movie database.pdf'))
 
 # Convert PDF to text
-pdf_file = open(f'content/movie database.pdf', 'rb')
-pdf_reader = PyPDF2.PdfFileReader(pdf_file)
-text = ''
-for page in pdf_reader.pages:
-    text += page.extract_text()
+index = GPTSimpleVectorIndex.from_documents(documents)
 
-# Create GPTSimpleVectorIndex
-vector_size = 512
-index = GPTSimpleVectorIndex(vector_size)
-
-# Convert text to vectors and add to index
-vectors = index.encode_text(text)
-index.add_vectors(vectors)
+# # Convert text to vectors and add to index
+# vectors = index.encode_text(text)
+# index.add_vectors(vectors)
 
 # Create a ConversationEntityMemory object if not already created
 if 'entity_memory' not in st.session_state:

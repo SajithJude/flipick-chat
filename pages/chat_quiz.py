@@ -5,6 +5,7 @@ from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import initialize_agent
 import openai
+import os
 from llama_index.langchain_helpers.agents import LlamaToolkit, create_llama_chat_agent, IndexToolConfig, GraphToolConfig
 from llama_index.indices.query.query_transform.base import DecomposeQueryTransform
 openai.api_key = os.getenv("API_KEY")

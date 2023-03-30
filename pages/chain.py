@@ -7,7 +7,7 @@ from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMP
 from langchain.llms import OpenAI
 import os 
 from pathlib import Path
-from llama_index import download_loader, GPTSimpleVectorIndex
+from llama_index import download_loader, GPTSimpleVectorIndex,GPTListIndex
 from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool,LlamaToolkit
 from llama_index.langchain_helpers.agents import create_llama_chat_agent
 
@@ -88,7 +88,7 @@ documents1 = loader.load_data(file=Path('content/movie database.pdf'))
 # Convert PDF to text
 index = GPTSimpleVectorIndex.from_documents(documents)
 index1 = GPTSimpleVectorIndex.from_documents(documents1)
-list_index=GPTListIndex([documents,documents1])
+list_index=GPTListIndex.from_documents([documents,documents1])
 
 tool_config = IndexToolConfig(
     index=list_index, 

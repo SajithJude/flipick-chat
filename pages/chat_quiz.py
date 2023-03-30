@@ -53,13 +53,13 @@ if selected_file:
         },
     ]
     # graph config
-    graph_config = GraphToolConfig(
-        graph=graph,
-        name=f"Graph Index",
-        description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
-        query_configs=query_configs,
-        tool_kwargs={"return_direct": True}
-    )
+    # graph_config = GraphToolConfig(
+    #     graph=graph,
+    #     name=f"Graph Index",
+    #     description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+    #     query_configs=query_configs,
+    #     tool_kwargs={"return_direct": True}
+    # )
 
     # # define toolkit
     # index_configs = []
@@ -78,7 +78,7 @@ if selected_file:
 
     toolkit = LlamaToolkit(
         index_configs=st.session_state.index_configs,
-        graph_configs=[graph_config]
+        # graph_configs=[graph_config]
     )
 
     memory = ConversationBufferMemory(memory_key="chat_history")

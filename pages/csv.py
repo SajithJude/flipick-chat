@@ -2,6 +2,7 @@ from pathlib import Path
 from llama_index import download_loader
 import streamlit as st 
 from llama_index import GPTSimpleVectorIndex
+import io 
 
 PagedCSVReader = download_loader("PagedCSVReader")
 

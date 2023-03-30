@@ -27,7 +27,7 @@ selected_file = st.multiselect("Select an Index file:", json_files)
 
 if selected_file:
     # graph = ComposableGraph.load_from_disk(selected_file, service_context=service_context)
-    graph = ComposableGraph.build_from_indices(
+    graph = ComposableGraph.from_indices(
     GPTListIndex,
     selected_file,
     index_summaries=st.session_state.index_summaries,

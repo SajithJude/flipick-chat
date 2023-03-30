@@ -51,7 +51,7 @@ if multiselected_file:
     ]
     # graph config
     config = IndexToolConfig(
-        index=index,
+        index=[index],
         name="My GPTSimpleVectorIndex",
         description="An index of some test data",
         index_query_kwargs={"similarity_top_k": 3},

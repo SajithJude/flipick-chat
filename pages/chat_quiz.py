@@ -59,7 +59,7 @@ if multiselected_file:
     )
 
     toolkit = LlamaToolkit(
-       index_configs=index_configs,
+       index_configs=config,
     )
 
     memory = ConversationBufferMemory(memory_key="chat_history")
